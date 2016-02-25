@@ -38,7 +38,7 @@ In this paper we introduce a new software package named \emph{BEASTling} which a
 
 \section{Design and Implementation}
 
-BEASTling is a command-line program written in the Python 2 programming language, which takes the approach of transforming one kind of configuration file into another, effectively specifying an alternative configuration file format for BEAST.  In contrast to BEAST's native XML files, BEASTling configuration files are designed to be short, neat, human-readable, and intuitively editable by hand.  Analyses are specified at a high-level of abstraction, roughly corresponding to the details that a typical user might have in their head when designing an analysis, e.g. ``I'd like to infer a phylogenetic tree of the Austronesian languages, using structural data from WALS,  with the Lewis Mk substitution model, permitting rate variation but with a strict clock''.  Typical BEASTling configuration files are approximately 15-25 lines long.  An example valid configuration file is shown in Figure \ref{fig:config}.
+BEASTling is a command-line program written in the Python programming language, which takes the approach of transforming one kind of configuration file into another, effectively specifying an alternative configuration file format for BEAST.  In contrast to BEAST's native XML files, BEASTling configuration files are designed to be short, neat, human-readable, and intuitively editable by hand.  Analyses are specified at a high-level of abstraction, roughly corresponding to the details that a typical user might have in their head when designing an analysis, e.g. ``I'd like to infer a phylogenetic tree of the Austronesian languages, using structural data from WALS,  with the Lewis Mk substitution model, permitting rate variation but with a strict clock''.  Typical BEASTling configuration files are approximately 15-25 lines long.  An example valid configuration file is shown in Figure \ref{fig:config}.
 
 \begin{figure}[t]
 	\begin{verbatim}[admin]
@@ -53,7 +53,7 @@ data = wals_data.csv
 model = mk
 frequencies = empirical
 rate_variation = True
-[calibration_dates]
+[calibration]
 Indo-European = 7800 - 9800
 Uralic = 3330 - 7503\end{verbatim}
 	\caption{An example BEASTling configuration file, specifying an analysis of 3 Eurasian language families, using the Lewis Mk model with empirical base frequencies and Gamma-distributed rate variation, and two calibration points.}
@@ -82,7 +82,7 @@ It is possible to specify multiple datasets in a single BEASTling analysis, and 
 
 \subsection{Data formats}
 
-BEASTling accepts linguistic data in comma separated value (CSV) file formats, which represent a ``lowest common denominator'' of formats, as opposed to specialist formats like NEXUS.  Two CSV formats are supported.  One is a simple ``native'' format designed for BEASTling, in which each row corresponds to one language, and contains the datapoints for every linguistic feature in the dataset (each column corresponds to one feature).  The other is the Cross-Linguistic Data Format defined by the Cross-Linguistic Linked Data project.  This makes it extremely easy to specify analyses using data from existing databases which use the CLDF format, such as WALS and SAILS.
+BEASTling accepts linguistic data in comma separated value (CSV) file formats, which represent a ``lowest common denominator'' of formats, as opposed to specialist formats like NEXUS.  Two CSV formats are supported.  One is a simple ``native'' format designed for BEASTling, in which each row corresponds to one language, and contains the datapoints for every linguistic feature in the dataset (each column corresponds to one feature).  The other is the Cross-Linguistic Data Format, a format standardizing exchange of data within the Cross-Linguistic Linked Data project and related database projects.  This makes it extremely easy to specify analyses using data from existing databases which use the CLDF format, such as WALS and SAILS.
 
 BEASTling aims to provide flexibility in the encoding of data, to minimise the amount of work required to use existing data files.  As long as the data file conforms to one of the two supported CSV file formats, names for languages and features can be arbitrary strings (though each language and feature must have a unique name).  Feature values similarly can be arbitrary strings, with distinct strings being treated as distinct values.  Thus, BEASTling will readily accept data files where different feature values are coded numerically (0, 1, 2,\ldots or 1, 2, 3,\ldots), alphabetically (A, B, C, \ldots) or in any consistent freely written form (SOV,SVO,VSO,VOS,OVS,OSV for word order, for example).  If the binary Covarion substitution model is selected, data is automatically recoded into the required binary format.  For example, the word order feature given previously would be replaced by six features with values of 0 or 1.  This approach permits BEASTling to share a single mutation rate across the newly created features, and also means one data file can be used for binary or non-binary substitution models, rather than the user being forced to maintain two copies of the same data for use with different models.  Missing data points are represented by question marks.
 

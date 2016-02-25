@@ -1,3 +1,5 @@
+all: clean examples paper
+
 # Clean
 .PHONY: clean
 clean:
@@ -26,16 +28,16 @@ examples: austronesian indoeuropean
 austronesian:
 	cd examples/austronesian && \
 		./preprocess.py && \
-		beastling austronesian.conf && \
-		beast -java austronesian.xml && \
+		beastling --overwrite austronesian.conf && \
+		beast -overwrite -java austronesian.xml && \
 		./postprocess.py
 
 .PHONY: indoeuropean
 indoeuropean:
 	cd examples/indoeuropean && \
 		./preprocess.py && \
-		beastling indoeuropean.conf && \
-		beast -java indoeuropean.xml && \
+		beastling --overwrite indoeuropean.conf && \
+		beast -overwrite -java indoeuropean.xml && \
 		./postprocess.py
 
 # Targets for building the paper:

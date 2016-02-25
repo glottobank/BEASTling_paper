@@ -30,6 +30,9 @@ def reformat_wals(killable_names):
     fn = [name.split()[0] if name[0].isdigit() else name for name in fn]
     fn = ["iso" if name == "iso_code" else name for name in fn]
     fn = [name for name in fn if name == "iso" or name[0].isdigit()]
+    fn.remove("95A")
+    fn.remove("96A")
+    fn.remove("97A")
     fn.remove("iso")
     fn.insert(0,"iso")
 
@@ -43,7 +46,7 @@ def reformat_wals(killable_names):
         for key in row.keys():
             newkey = key.split()[0] if key[0].isdigit() else key
             newkey = "iso" if newkey == "iso_code" else newkey
-            if not (newkey == "iso" or newkey[0].isdigit()):
+            if newkey not in fn:
                 continue
             val = row[key]
             newval = val.split()[0] if val and val[0].isdigit() else val

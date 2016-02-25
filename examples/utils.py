@@ -9,6 +9,14 @@ def prepare_log_file(infile, outfile):
     fp_in.close()
     fp_out.close()
 
+bad_keys = ("posterior", "likelihood", "prior","clockRate", "birthRate", \
+    "Sample")
+bad_subkeys = ("covarion", "GammaShape")
+
+def want(key):
+    return not(key in bad_keys or \
+            any([s in key for s in bad_subkeys]))
+
 def write_means(logfile, outfile):
     fp = open(logfile,"r")
     reader = csv.DictReader(fp, delimiter="\t")
@@ -33,10 +41,11 @@ def write_means(logfile, outfile):
     means = {key:means[key]/N for key in means}
     fp.close()
     # Rank columns by mean values
-    ranked = [(means[key],key) for key in means]
+    ranked = [(means[key],key) for key in means if want(key)]
     ranked.sort()
     # Save ranked means
     fp = open(outfile, "w")
     for mean, key in ranked:
         fp.write("%s,%f\n" % (key, mean))
     fp.close()
+    return ranked

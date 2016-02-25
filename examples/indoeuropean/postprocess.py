@@ -27,6 +27,24 @@ def plot_mcc_tree():
     ts.show_branch_support = False
     t.render("mcct.pdf", ultrametric, w=600, tree_style=ts)
 
+def make_table(ranked_means):
+    fp = open("table.tex", "w")
+    fp.write("""\\begin{tabular}{|l|c||l|c|}
+    \\hline
+    \\multicolumn{2}{|c||}{Slowest} & \\multicolumn{2}{|c|}{Fastest} \\\\ \\hline
+    Feature & Rate  & Feature & Rate \\\\ \\hline
+""")
+    top_10 = ranked_means[0:10]
+    bottom_10 = ranked_means[-10:]
+    for ((f_rate, f_name),(s_rate,s_name)) in zip(top_10, bottom_10):
+        f_name = f_name.split(":")[-1]
+        s_name = s_name.split(":")[-1]
+        fp.write("  %s & %.2f & %s & %.2f \\\\ \n" % \
+                (f_name, f_rate, s_name, s_rate))
+    fp.write("\\hline\n")
+    fp.write("\\end{tabular}\n")
+    fp.close()
+
 def main():
 
     print("Finding maximum clade credibility tree...")
@@ -35,7 +53,10 @@ def main():
     plot_mcc_tree()
     print("Computing posterior mean paramter estimates...")
     utils.prepare_log_file("indoeuropean.log", "prepared.log")
-    utils.write_means("prepared.log", "parameter_means.csv")
+    ranked_means = utils.write_means("prepared.log", "parameter_means.csv")
+    print("Generating LaTeX table...")
+    make_table(ranked_means)
+
 
 if __name__ == "__main__":
     main()

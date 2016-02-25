@@ -126,21 +126,7 @@ In addition to a posterior sample of trees, the analysis logs posterior distribu
 (\textbf{LM: A few notes on this: first, this is quite a bit less variation in rate than observed in Pagel et al 2007 for IE data.  I suppose this may come down to the small amount of data being used.  Secondly, do the particular meaning slots which come out as being slow/fast seem intuitively plausible to linguists?  Thirdly, I will likely redo this analysis very soon: the dataset encodes known borrowings as negative integers (e.g. a language with value -4 has borrowed a word from cognate set 4).  BEASTling doesn't known this convention and treats 4 and -4 as distinct values.  I may just replace all negative numbers with question marks and do it again.  I do  not expect massive changes, but if Aermenian/Greek/Hindi got shuffled it would be nice.})
 \begin{table}[t]
 	\begin{center}
-	\begin{tabular}{|l|c||l|c|}
-		\hline
-		\multicolumn{2}{|c||}{Slowest} & \multicolumn{2}{|c|}{Fastest} \\ \hline
-		Feature & Rate  & Feature & Rate \\ \hline
-		star & 0.390 & tail & 2.068 \\
-		tooth & 0.401 & to know & 1.933 \\
-		I & 0.408 & bark & 1.873 \\
-		tongue & 0.409 & that & 0.816 \\
-		sun & 0.410 & belly & 1.796 \\
-		full & 0.431 & small & 1.795 \\
-		name & 0.432 & big & 1.756 \\
-		eye & 0.437 & short & 1.704 \\
-		ear & 0.439 & breast & 1.691 \\
-		person & 0.543894 & to eat & 1.687 \\ \hline
-	\end{tabular}
+		\input{examples/indoeuropean/table.tex}
 	\end{center}
 	\caption{Relative mutation rates of the ten slowest and fastest changing meaning classes in our example analysis of Indo-European cognate data.}
 \label{tab:ie}
@@ -155,37 +141,9 @@ The inferred rates show a wider variation than for the Indo-European example.  T
 (\textbf{LM: Question for Austronesianists: is the phonological component of the fastest rates perhaps something that would be an expected consequence of some high-level feature of the family?  It's also possible that these results are driven to some extent by missing data.  I might redo this will something like all features with less than 50\% data removed.  I may even add a feature to BEASTling to automate this kind of trimming.})
 
 \begin{table*}[ht]
-	\begin{tabular}{|l|c|}
-		\hline
-		Feature & Rate  \\ \hline
-		\multicolumn{2}{|c|}{Slowest} \\ \hline
-		Order of Object and Verb & 0.116 \\
-		Order of Adposition and Noun Phrase & 0.142 \\
-		Relationship between the Order of Object and Verb and the Order of Adposition and Noun Phrase & 0.191 \\
-		Relationship between the Order of Object and Verb and the Order of Relative Clause and Noun & 0.197 \\
-		Order of Genitive and Noun & 0.213 \\
-		Position of Pronominal Possessive Affixes & 0.300 \\
-		Order of Subject and Verb & 0.328 \\
-		Order of Negative Morpheme and Verb & 0.395 \\
-		Relationship between the Order of Object and Verb and the Order of Adjective and Noun &  0.401 \\
-Order of Subject, Object and Verb & 0.436 \\
-		Order of Numeral and Noun & 0.438 \\
-		Order of Adjective and Noun & 0.484 \\ \hline
-		\multicolumn{2}{|c|}{Fastest} \\ \hline
-		Order of Degree Word and Adjective & 1.301 \\
-		Overlap between Situational and Epistemic Modal Marking & 1.302 \\
-		Distributive Numerals & 1.318 \\
-		The Prohibitive & 1.320 \\
-		Obligatory Double Negation in SVO languages & 1.340 \\
-		Comitatives and Instrumentals & 1.471 \\
-		Weight-Sensitive Stress & 1.473 \\
-		Definite Articles & 1.474 \\
-		The Position of Negative Morphemes in SOV Languages & 1.528 \\
-		Ordinal Numerals & 1.561 \\
-		Rhythm Types & 1.598 \\
-	   	Ditransitive Constructions: The Verb `Give' & 1.618 \\
-		Fixed Stress Locations & 1.770 \\ \hline
-	\end{tabular}
+	\begin{center}
+		\input{examples/austronesian/table.tex}
+	\end{center}
 	\caption{Relative mutation rates of the ten slowest and fastest changing features in our example analysis of Austronesian structural data.}
 \label{tab:austro}
 \end{table*}

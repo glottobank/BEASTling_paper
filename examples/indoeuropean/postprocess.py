@@ -1,8 +1,10 @@
 #!/usr/bin/env python2
+import csv
 import subprocess
 import sys
 
 import ete2
+import scipy.stats
 
 sys.path.append("..")
 import utils
@@ -26,6 +28,72 @@ def plot_mcc_tree():
     ts = ete2.TreeStyle()
     ts.show_branch_support = False
     t.render("mcct.pdf", ultrametric, w=600, tree_style=ts)
+
+def load_starostin_ranking():
+    ranking = []
+    fp = open("starostin_ranking.csv", "r")
+    r = csv.DictReader(fp)
+    for row in r:
+        word = row["description"].lower()
+        word = "walk" if word =="walk(go)" else word
+        rank = int(row["number"])
+        ranking.append((rank, word))
+    fp.close()
+    ranking.sort()
+    return [w for (n,w) in ranking]
+
+def load_swadesh_ranking():
+    ranking = []
+    fp = open("Swadesh-1955-215.tsv", "r")
+    r = csv.DictReader(fp, delimiter="\t")
+    for row in r:
+        word = row["ENGLISH"].lower()
+        if word.startswith("*"):
+            word = word[1:]
+        if "(" in word:
+            word = word.split("(")[0].strip()
+        rank = int(row["STABILITY_SCORE"])
+        ranking.append((rank, word))
+    fp.close()
+    ranking.sort()
+    ranking.reverse()
+    return [w for (n,w) in ranking]
+
+def compute_ranking_correls(ranked_means):
+    ranked_means = [w.split(":")[-1].lower() for (r,w) in ranked_means]
+    ranked_means = [w[:-4] if w.endswith(" (v)") else w for w in ranked_means]
+
+    starostin = load_starostin_ranking()
+    starostin = [s for s in starostin if s in ranked_means]
+    posterior = [p for p in ranked_means if p in starostin]
+    starostin = [starostin.index(w) for w in posterior]
+    posterior = [posterior.index(w) for w in posterior]
+    starostin_correl = scipy.stats.spearmanr(posterior, starostin)[0]
+
+    swadesh = load_swadesh_ranking()
+    swadesh = [s for s in swadesh if s in ranked_means]
+    posterior = [p for p in ranked_means if p in swadesh]
+    swadesh = [swadesh.index(w) for w in posterior]
+    posterior = [posterior.index(w) for w in posterior]
+    swadesh_correl = scipy.stats.spearmanr(posterior, swadesh)[0]
+
+    starostin = load_starostin_ranking()
+    swadesh = load_swadesh_ranking()
+    starostin = [s for s in starostin if s in ranked_means and s in swadesh]
+    swadesh = [s for s in swadesh if s in ranked_means and s in starostin]
+    posterior = [p for p in ranked_means if p in starostin and p in swadesh]
+    starostin = [starostin.index(w) for w in posterior]
+    swadesh = [swadesh.index(w) for w in posterior]
+    posterior = [posterior.index(w) for w in posterior]
+    mean = [(st+sw)/2.0 for st,sw in zip(starostin,swadesh)]
+    mean_correl = scipy.stats.spearmanr(posterior, mean)[0]
+
+    fp = open("ranking_correlations.csv", "w")
+    fp.write("%s, %f\n" % ("Starostin", starostin_correl))
+    fp.write("%s, %f\n" % ("Swadesh", swadesh_correl))
+    fp.write("%s, %f\n" % ("Mean", mean_correl))
+    fp.close()
+
 
 def make_table(ranked_means):
     fp = open("table.tex", "w")
@@ -54,6 +122,8 @@ def main():
     print("Computing posterior mean paramter estimates...")
     utils.prepare_log_file("indoeuropean.log", "prepared.log")
     ranked_means = utils.write_means("prepared.log", "parameter_means.csv")
+    print("Computing ranking correlations...")
+    compute_ranking_correls(ranked_means)
     print("Generating LaTeX table...")
     make_table(ranked_means)
 

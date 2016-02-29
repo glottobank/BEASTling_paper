@@ -46,3 +46,4 @@ paper:
 	xelatex beastling
 	bibtex beastling
 	xelatex beastling
+	xelatex beastling

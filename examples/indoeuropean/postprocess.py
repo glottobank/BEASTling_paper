@@ -20,23 +20,24 @@ def ultrametric(node):
         node.img_style["size"]=5
     else:
         node.img_style["size"]=0
-        if node.dist > 0.05:
-            node.add_face(ete2.TextFace("%.2f" % node.support, fsize=4),column=0,position="branch-top")
+#        if node.dist > 0.05:
+#            node.add_face(ete2.TextFace("%.2f" % node.support, fsize=4),column=0,position="branch-top")
 
 def plot_mcc_tree():
     t = ete2.Tree("mcct.nex")
     ts = ete2.TreeStyle()
-    ts.show_branch_support = False
-    t.render("mcct.pdf", ultrametric, w=600, tree_style=ts)
+    ts.show_scale = False
+    ts.show_branch_support = True
+    t.render("mcct.pdf", ultrametric, tree_style=ts)
 
 def load_starostin_ranking():
     ranking = []
-    fp = open("starostin_ranking.csv", "r")
-    r = csv.DictReader(fp)
+    fp = open("Starostin-2007-110.tsv", "r")
+    r = csv.DictReader(fp, delimiter="\t")
     for row in r:
-        word = row["description"].lower()
+        word = row["GLOSS"].lower()
         word = "walk" if word =="walk(go)" else word
-        rank = int(row["number"])
+        rank = int(row["NUMBER"])
         ranking.append((rank, word))
     fp.close()
     ranking.sort()
@@ -59,6 +60,22 @@ def load_swadesh_ranking():
     ranking.reverse()
     return [w for (n,w) in ranking]
 
+def load_pagel_ranking():
+    ranking = []
+    fp = open("Pagel-2007-200.tsv", "r")
+    r = csv.DictReader(fp, delimiter="\t")
+    for row in r:
+        word = row["ENGLISH"].lower()
+        if "(" in word:
+            word = word.split("(")[0].strip()
+        if word.startswith("to "):
+            word = word.split(" ",1)[1]
+        rank = float(row["MEAN_RATE"])
+        ranking.append((rank, word))
+    fp.close()
+    ranking.sort()
+    return [w for (n,w) in ranking]
+
 def compute_ranking_correls(ranked_means):
     ranked_means = [w.split(":")[-1].lower() for (r,w) in ranked_means]
     ranked_means = [w[:-4] if w.endswith(" (v)") else w for w in ranked_means]
@@ -77,6 +94,13 @@ def compute_ranking_correls(ranked_means):
     posterior = [posterior.index(w) for w in posterior]
     swadesh_correl = scipy.stats.spearmanr(posterior, swadesh)[0]
 
+    pagel = load_pagel_ranking()
+    pagel = [s for s in pagel if s in ranked_means]
+    posterior = [p for p in ranked_means if p in pagel]
+    pagel = [pagel.index(w) for w in posterior]
+    posterior = [posterior.index(w) for w in posterior]
+    pagel_correl = scipy.stats.spearmanr(posterior, pagel)[0]
+
     starostin = load_starostin_ranking()
     swadesh = load_swadesh_ranking()
     starostin = [s for s in starostin if s in ranked_means and s in swadesh]
@@ -92,6 +116,7 @@ def compute_ranking_correls(ranked_means):
     fp.write("%s, %f\n" % ("Starostin", starostin_correl))
     fp.write("%s, %f\n" % ("Swadesh", swadesh_correl))
     fp.write("%s, %f\n" % ("Mean", mean_correl))
+    fp.write("%s, %f\n" % ("Pagel", pagel_correl))
     fp.close()
 
 

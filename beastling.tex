@@ -96,7 +96,9 @@ BEASTling's Glottolog integration also makes it very convenient to add important
 
 Glottolog clade names can also be used to specify a subset of languages in a dataset to use for an analysis, enabling the user to easily extract, say, only the Indo-European and Uralic languages from a global database.  This removes the need to maintain multiple copies of the same data for use with modelling different sets of language families.
 
-These features demonstrate the importance and the power of making generally useful linguistic data available in machine-readable formats under permissive copyright licenses and of referring to languages using standardised, unique identifiers.
+These features demonstrate the importance and the power of making broadly useful linguistic data available in machine-readable formats under permissive copyright licenses and of referring to languages using standardised, unique identifiers.
+
+Glottolog is an ongoing effort, and names and classifications are subject to change between releases.  Each release of BEASTling will be packaged with the latest Glottolog release available at the time.  However, any previous Glottolog release back to 2.0 can be specified in a BEASTling configuration file, and BEASTling will download the appropriate data from \texttt{glottolog.org}.  This allows published analyses to be replicated and modified by future releases of BEASTling, even after new Glottolog releases have been made.
 
 \subsection{Advanced features}
 
@@ -122,7 +124,7 @@ The maximum clade credibility tree produced by this analysis is shown in Figure 
 \label{fig:ie}
 \end{figure}
 
-In addition to a posterior sample of trees, the analysis logs posterior distributions over the relative substitution rate parameters for the 110 features.  A modest amount of rate variation is inferred, with the fastest feature having a rate a little more than 5 times faster than the slowest feature.  Table \ref{tab:ie} shows the features with the ten highest and ten lowest rates.  
+In addition to a posterior sample of trees, the analysis logs posterior distributions over the relative substitution rate parameters for the 110 features.  A modest amount of rate variation is inferred, with the fastest feature under going change 4 times faster than the slowest feature.  Table \ref{tab:ie} shows the features with the ten highest and ten lowest rates.  
 \begin{table}[t]
 	\begin{center}
 		\input{examples/indoeuropean/table.tex}
@@ -137,7 +139,7 @@ Previous rankings of very similar word lists by purported stability have been pu
 
 Our second example is an illustration of BEASTling's ability to accept a user-specified starting tree, and to sample only model parameters during the MCMC run, leaving tree topology and branch lengths fixed.  We use the maximum clade credibility tree from a 2009 Bayesian investigation of Austronesian language family phylogeny by Gray et. al.\cite{Gray2009} as the fixed tree, and structural features from WALS as the data.  We label the leaves of the reference tree with ISO codes, and BEASTling automatically prunes the tree to include only those languages whose ISO codes are present in the WALS database.  We configure BEASTling to exclude any features which have known values for less than 25\% of languages.  We also manually exclude 3 WALS features (IDs 95A, 96A and 97A) which are not features in their own right, but instead encode the relationship between other features.  The final analysis involves 169 Austronesian languages and 25 WALS features (see Supplementary Material for a full discussion of the languages and features involved).  A Lewis Mk model is specified for the data, with rate variation enabled, the inferred rates being the subject of interest.  Since the tree is fixed to a known value, BEASTling automatically disables tree logging to save disk space.
 
-The inferred rates show a wider variation than for the Indo-European example.  The fastest changing feature has a rate just over 15 times higher than the slowest changing feature.  Table \ref{tab:austro} shows the 10 slowest and fastest changing features.  9 of the 10 slowest are categorised by WALS as word order features, consistent with conventional wisdom that these are some of the most stable structural features.  The 10 fastest changing features come from a wider range of categories, but the most common are nominal categories and phonology (particularly features related to stress and rhythm).
+The inferred rates show a much wider variation than the Indo-European example.  The fastest changing feature has a rate over 11 times higher than the slowest changing feature.  Table \ref{tab:austro} shows the 10 slowest and fastest changing features.  Many of the slowest features are categorised by WALS as word order features, consistent with conventional wisdom that these are some of the most stable structural features.
 
 \begin{table*}[ht]
 	\begin{center}

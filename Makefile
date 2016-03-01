@@ -10,6 +10,12 @@ clean:
 	-rm beastling.log
 	-rm beastling.out
 	-rm beastling.pdf
+	-rm supplement.aux
+	-rm supplement.bbl
+	-rm supplement.blg
+	-rm supplement.log
+	-rm supplement.out
+	-rm supplement.pdf
 	# Delete BEASTling and BEAST output
 	-rm examples/*/*.xml
 	-rm examples/*/*.log
@@ -47,3 +53,5 @@ paper:
 	bibtex beastling
 	xelatex beastling
 	xelatex beastling
+	xelatex supplement
+	xelatex supplement

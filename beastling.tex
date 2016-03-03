@@ -14,7 +14,7 @@
 
 \begin{document}
 
-\title{BEASTling: a software tool for computational linguistic phylogenetics using BEAST 2}
+\title{BEASTling: a software tool for linguistic phylogenetics using BEAST 2}
 \author{Luke Maurits, Robert Forkel}
 \maketitle
 
@@ -38,7 +38,7 @@ In this paper we introduce a new software package named \emph{BEASTling} which a
 
 \section{Design and Implementation}
 
-BEASTling is a command-line program written in the Python programming language\footnote{Python versions 2.7 and 3.4+ are supported.}, which takes the approach of transforming one kind of configuration file into another, effectively specifying an alternative configuration file format for BEAST.  In contrast to BEAST's native XML files, BEASTling configuration files are designed to be short, neat, human-readable, and intuitively editable by hand.  Analyses are specified at a high-level of abstraction, roughly corresponding to the details that a typical user might have in their head when designing an analysis, e.g. ``I'd like to infer a phylogenetic tree of the Austronesian languages, using structural data from WALS, with the Lewis Mk substitution model, permitting rate variation but with a strict clock''.  Typical BEASTling configuration files are approximately 15-25 lines long.  An example valid configuration file is shown in Figure \ref{fig:config}.
+BEASTling is a command-line program written in the Python programming language\footnote{Python versions 2.7 and 3.4+ are supported.}, which takes the approach of transforming one kind of configuration file into another, effectively specifying an alternative configuration file format for BEAST.  In contrast to BEAST's native XML files, BEASTling configuration files are designed to be short, neat, human-readable, and intuitively editable by hand.  Analyses are specified at a high-level of abstraction, roughly corresponding to the details that a typical user might have in their head when designing an analysis, e.g. ``I'd like to infer a phylogenetic tree of the Austronesian languages, using structural data from WALS, with the Lewis Mk substitution model, permitting rate variation across features''.  Typical BEASTling configuration files are approximately 15-25 lines long.  An example valid configuration file is shown in Figure \ref{fig:config}.
 
 \begin{figure}[t]
 	\begin{verbatim}[admin]

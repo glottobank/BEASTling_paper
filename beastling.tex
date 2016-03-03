@@ -42,21 +42,20 @@ BEASTling is a command-line program written in the Python programming language\f
 
 \begin{figure}[t]
 	\begin{verbatim}[admin]
-basename = mk_eurasian
+basename = mk_austrotai
 [MCMC]
 chainlength = 50000000
 [languages]
-families = Indo-European, Uralic, Yukaghir
-monophyletic = True
+families = Austronesian, Tai-Kadai
+monophyly = True
 [model wals]
 data = wals_data.csv
 model = mk
 frequencies = empirical
 rate_variation = True
 [calibration]
-Indo-European = 7800 - 9800
-Uralic = 3330 - 7503\end{verbatim}
-	\caption{An example BEASTling configuration file, specifying an analysis of 3 Eurasian language families, using the Lewis Mk model with empirical base frequencies and Gamma-distributed rate variation, and two calibration points.}
+Austronesian = 4700 - 5700\end{verbatim}
+	\caption{An example BEASTling configuration file, specifying an analysis of the Austronesian and Tai-Kadai language families, using structural data from WALS, modelled by the Lewis Mk model with empirical base frequencies and Gamma-distributed rate variation across features.  A calibration date range is applied to the root of Austronesian.}
 \label{fig:config}
 \end{figure}
 

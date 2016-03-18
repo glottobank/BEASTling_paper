@@ -5,11 +5,14 @@ import sys
 
 import newick
 
-sys.path.append("..")
-import utils
+language_csv = "language.csv"
+wals_csv = "wals_data.csv"
+iso_map = "iso.austronesian.txt"
+tree_file_name = "a400-m1pcv-time.mcct.trees"
+reference_tree_file_name = "austronesian.nex"
 
 def load_wals_iso_names():
-    fp = open("language.csv","r")
+    fp = open(language_csv, "r")
     reader = csv.DictReader(fp)
     mapping = {}
     for row in reader:
@@ -20,8 +23,8 @@ def load_wals_iso_names():
     return mapping
 
 def reformat_wals(exclusions):
-    fp_in = open("language.csv","r")
-    fp_out = open("wals_data.csv","w")
+    fp_in = open(language_csv, "r")
+    fp_out = open(wals_csv, "w")
 
     reader = csv.DictReader(fp_in)
 
@@ -54,13 +57,13 @@ def reformat_wals(exclusions):
         if newrow["iso"] == "?":
                 continue
         writer.writerow(newrow)
-    
+
     fp_in.close()
     fp_out.close()
 
 def clean_reference_tree():
-    fp_in = open("a400-m1pcv-time.mcct.trees", "r")
-    fp_out = open("austronesian_reference.nex", "w")
+    fp_in = open(tree_file_name, "r")
+    fp_out = open(reference_tree_file_name, "w")
     for line in fp_in:
         # Skip comments and NEXUS cruft
         if not line.startswith("tree"):
@@ -72,7 +75,7 @@ def clean_reference_tree():
     fp_out.close()
 
 def load_austro_iso_names():
-    fp = open("iso.austronesian.txt", "r")
+    fp = open(iso_map, "r")
     untranslatable = []
     mapping = {}
     # Separate languages with ISO codes from those without
@@ -97,7 +100,7 @@ def resolve_languages():
     a_exclusions.extend(l.lower() for l in a_mapping if a_mapping[l] == "XXX")
 
     a_duped_isos = set([i for i in a_mapping.values() \
-            if a_mapping.values().count(i) > 1])
+            if list(a_mapping.values()).count(i) > 1])
     # First, iterated over all ISO codes which are duplicated in the refrence
     # Austronesian tree.  Get all of the names in the ref. tree which map to
     # an ISO, and all of the names in WALS which map to that ISO.  Find the
@@ -119,7 +122,7 @@ def resolve_languages():
     # Now there might be ISO codes which are duplicates in WALS but not the
     # reference tree.
     w_duped_isos = set([i for i in w_mapping.values() \
-            if w_mapping.values().count(i) > 1])
+            if list(w_mapping.values()).count(i) > 1])
     for iso in w_duped_isos:
         a_names = set([l.lower() for l in a_mapping if a_mapping[l] == iso])
         w_names = set([l.lower() for l in w_mapping if w_mapping[l] == iso])
@@ -129,10 +132,10 @@ def resolve_languages():
             w_exclusions.extend(w_names.difference(true_name))
         else:
             w_exclusions.extend(w_names)
-    for l in a_mapping.keys():
+    for l in list(a_mapping.keys()):
         if l.lower() in set(a_exclusions):
             a_mapping.pop(l)
-    for l in w_mapping.keys():
+    for l in list(w_mapping.keys()):
         if l.lower() in set(w_exclusions):
             w_mapping.pop(l)
 
@@ -161,7 +164,7 @@ def make_table(a_mapping, w_mapping):
     fp.close()
 
 def adjust_reference_tree(kill_list, translation):
-    tree = newick.read("austronesian.nex")[0]
+    tree = newick.read(reference_tree_file_name)[0]
     tree.remove_internal_names()
     for n in tree.walk():
         if n.name:
@@ -169,7 +172,7 @@ def adjust_reference_tree(kill_list, translation):
         if n.is_leaf and n.name in translation:
             n.name = translation[n.name]
     tree.prune_by_names(kill_list)
-    newick.write([tree], "austronesian.nex")
+    newick.write([tree], reference_tree_file_name)
     # Save a BEASTling compatible list of ISO codes
     isos = [n.name for n in tree.walk() if n.is_leaf]
     fp = open("language_list.txt", "w")
@@ -188,4 +191,18 @@ def main():
     adjust_reference_tree(a_exclusions, a_mapping)
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser("Consolidate wals data and trees")
+    parser.add_argument("tree", default=tree_file_name, nargs='?')
+    parser.add_argument("iso_map", default=iso_map, nargs='?')
+    parser.add_argument("out", default=reference_tree_file_name,
+                        nargs='?')
+    parser.add_argument("--language_csv", default=language_csv)
+    parser.add_argument("--wals_csv", default=wals_csv)
+    args = parser.parse_args()
+    language_csv = args.language_csv
+    wals_csv = args.wals_csv
+    iso_map = args.iso_map
+    tree_file_name = args.tree
+    reference_tree_file_name = args.out
     main()

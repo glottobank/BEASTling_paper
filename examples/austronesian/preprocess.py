@@ -161,14 +161,24 @@ def make_table(a_mapping, w_mapping):
     fp.close()
 
 def adjust_reference_tree(kill_list, translation):
-    tree = newick.read("austronesian.nex")[0]
+    tree = newick.read("austronesian_reference.nex")[0]
     tree.remove_internal_names()
     for n in tree.walk():
         if n.name:
-            n.name = n.name.lower() # Kill list is in lowercase
-        if n.is_leaf and n.name in translation:
-            n.name = translation[n.name]
+            if n.name in translation:
+                # Replace name by ISO
+                n.name = translation[n.name]
+            else:
+                # Convert to lowercase to match kill list
+                n.name = n.name.lower()
+    # Remove languages not in WALS
     tree.prune_by_names(kill_list)
+    # The pruning above will have left some un-named leaf nodes, so kill these
+    while None in tree.get_leaf_names():
+        tree.prune_by_names([None])
+    # All of the above has likely left some redundant tree nodes, i.e. nodes
+    # with only one descendant, so get rid of these
+    tree.remove_redundant_nodes()
     newick.write([tree], "austronesian.nex")
     # Save a BEASTling compatible list of ISO codes
     isos = [n.name for n in tree.walk() if n.is_leaf]

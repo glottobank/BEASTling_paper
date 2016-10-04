@@ -1,8 +1,12 @@
 all: clean examples paper
 
 # Clean
+.PHONY: clean_beast
+clean_beast:
+	rm -r beast/
+
 .PHONY: clean
-clean:
+clean: clean_beast
 	# Delete TeX cruft
 	-rm beastling.aux
 	-rm beastling.bbl
@@ -55,3 +59,27 @@ paper:
 	xelatex beastling
 	xelatex supplement
 	xelatex supplement
+
+# Check java
+java_is_8:
+	java -version 2> java_version && \
+		grep -F 'version "1.8' java_version && \
+		echo "YES" > java_is_8
+
+## Install beast:
+# Download core
+beast/distfiles/beast.tgz:
+	mkdir -p beast/distfiles
+	curl -Lo beast/distfiles/beast.tgz \
+		"https://github.com/CompEvol/beast2/releases/download/v2.4.3/BEAST.v2.4.3.Linux.tgz"
+
+# Unpack core
+beast/beast/bin/beast: beast/distfiles/beast.tgz
+	cd beast/ && \
+		tar -xzf distfiles/beast.tgz
+
+# Test beast
+beast_version: java_is_8 beast/beast/bin/beast
+	beast/beast/bin/beast -version > beast_version
+
+

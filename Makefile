@@ -54,10 +54,12 @@ examples: austronesian indoeuropean
 austronesian: $(BEAST_BIN) $(BEASTLING_BIN) $(ACTIVATE)
 	source $(ACTIVATE) && \
 		cd examples/austronesian && \
-		./preprocess.py && \
-		$(BEASTLING_BIN) --overwrite austronesian.conf && \
-		$(BEAST_BIN) -overwrite -java austronesian.xml && \
-		./postprocess.py
+		python ./preprocess.py && \
+		beastling --overwrite austronesian.conf
+	$(BEAST_BIN) -overwrite -java examples/austronesian/ustronesian.xml
+	source $(ACTIVATE) && \
+		cd examples/austronesian && \
+		python postprocess.py
 
 .PHONY: indoeuropean
 indoeuropean: $(BEAST_BIN) $(BEASTLING_BIN) $(ACTIVATE)

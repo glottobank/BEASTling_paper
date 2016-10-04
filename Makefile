@@ -50,24 +50,26 @@ clean: clean_beast
 .PHONY: examples
 examples: austronesian indoeuropean
 
-.PHONY: austronesian
-austronesian: $(BEAST_BIN) $(BEASTLING_BIN) $(ACTIVATE)
+examples/austronesian/austronesian.xml: $(BEASTLING_BIN) $(ACTIVATE)
 	source $(ACTIVATE) && \
 		cd examples/austronesian && \
 		python ./preprocess.py && \
 		beastling --overwrite austronesian.conf
-	$(BEAST_BIN) -overwrite -java examples/austronesian/ustronesian.xml
+examples/austronesian/austronesian.log: $(BEAST_BIN) examples/austronesian/austronesian.xml
+	$(BEAST_BIN) -overwrite -working -java examples/austronesian/austronesian.xml
+examples/austronesian/table.tex: $(ACTIVATE) examples/austronesian/austronesian.log
 	source $(ACTIVATE) && \
 		cd examples/austronesian && \
 		python postprocess.py
 
-.PHONY: indoeuropean
-indoeuropean: $(BEAST_BIN) $(BEASTLING_BIN) $(ACTIVATE)
+examples/indoeuropean/indoeuropean.xml: $(BEASTLING_BIN) $(ACTIVATE)
 	source $(ACTIVATE) && \
 		cd examples/indoeuropean && \
 		python preprocess.py && \
 		beastling --overwrite indoeuropean.conf
-	$(BEAST_BIN) -overwrite -java examples/indoeuropean/indoeuropean.xml
+examples/indoeuropean/indoeuropean.log: $(BEAST_BIN) examples/indoeuropean/indoeuropean.xml
+	$(BEAST_BIN) -overwrite -working -java examples/indoeuropean/indoeuropean.xml
+examples/indoeuropean/table.tex: $(ACTIVATE) examples/indoeuropean/indoeuropean.log
 	source $(ACTIVATE) && \
 		cd examples/indoeuropean && \
 		python postprocess.py

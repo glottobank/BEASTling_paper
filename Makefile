@@ -8,28 +8,28 @@ clean_beast:
 .PHONY: clean
 clean: clean_beast
 	# Delete TeX cruft
-	-rm beastling.aux
-	-rm beastling.bbl
-	-rm beastling.blg
-	-rm beastling.log
-	-rm beastling.out
-	-rm beastling.pdf
-	-rm supplement.aux
-	-rm supplement.bbl
-	-rm supplement.blg
-	-rm supplement.log
-	-rm supplement.out
-	-rm supplement.pdf
+	rm -f beastling.aux
+	rm -f beastling.bbl
+	rm -f beastling.blg
+	rm -f beastling.log
+	rm -f beastling.out
+	rm -f beastling.pdf
+	rm -f supplement.aux
+	rm -f supplement.bbl
+	rm -f supplement.blg
+	rm -f supplement.log
+	rm -f supplement.out
+	rm -f supplement.pdf
 	# Delete BEASTling and BEAST output
-	-rm examples/*/*.xml
-	-rm examples/*/*.log
-	-rm examples/*/*.nex
-	-rm examples/*/*.state
+	rm -f examples/*/*.xml
+	rm -f examples/*/*.log
+	rm -f examples/*/*.nex
+	rm -f examples/*/*.state
 	# Delete processed data files
-	-rm examples/indoeuropean/indoeuropean.csv
+	rm -f examples/indoeuropean/indoeuropean.csv
 	# Delete results
-	-rm examples/indoeuropean/parameter_means.csv
-	-rm examples/indoeuropean/mcct.pdf
+	rm -f examples/indoeuropean/parameter_means.csv
+	rm -f examples/indoeuropean/mcct.pdf
 
 .PHONY: examples
 examples: austronesian indoeuropean

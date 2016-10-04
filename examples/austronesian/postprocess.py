@@ -49,9 +49,7 @@ def make_tables(ranked_means):
 def main():
 
     print("Computing posterior mean paramter estimates...")
-    utils.prepare_log_file("austronesian.log", "prepared.log")
-    utils.write_means("prepared.log", "parameter_means.csv")
-    ranked_means = utils.write_means("prepared.log", "parameter_means.csv")
+    ranked_means = utils.write_means("austronesian.log", "parameter_means.csv")
     print("Generating LaTeX tables...")
     make_tables(ranked_means)
 

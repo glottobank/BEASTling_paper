@@ -161,7 +161,7 @@ def make_table(a_mapping, w_mapping):
     fp.close()
 
 def adjust_reference_tree(kill_list, translation):
-    tree = newick.read("austronesian.nex")[0]
+    tree = newick.read("austronesian_reference.nex")[0]
     tree.remove_internal_names()
     for n in tree.walk():
         if n.name:
@@ -175,7 +175,11 @@ def adjust_reference_tree(kill_list, translation):
     tree.prune_by_names(kill_list)
     # The pruning above will have left some un-named leaf nodes, so kill these
     while None in tree.get_leaf_names():
-        tree.prune_by_names([None])
+        unnamed_leaves = [
+            node
+            for node in tree.get_leaves()
+            if node.name is None]
+        tree.prune(unnamed_leaves)
     # All of the above has likely left some redundant tree nodes, i.e. nodes
     # with only one descendant, so get rid of these
     tree.remove_redundant_nodes()

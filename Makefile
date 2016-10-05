@@ -69,7 +69,7 @@ examples/indoeuropean/indoeuropean.xml: $(BEASTLING_BIN) $(ACTIVATE)
 		beastling --overwrite indoeuropean.conf
 examples/indoeuropean/indoeuropean.log: $(BEAST_BIN) examples/indoeuropean/indoeuropean.xml
 	$(BEAST_BIN) -overwrite -working -java examples/indoeuropean/indoeuropean.xml
-examples/indoeuropean/table.tex: $(ACTIVATE) examples/indoeuropean/indoeuropean.log
+examples/indoeuropean/table.tex: $(ACTIVATE) has_ete has_scipy has_numpy examples/indoeuropean/indoeuropean.log
 	source $(ACTIVATE) && \
 		cd examples/indoeuropean && \
 		python postprocess.py
@@ -98,7 +98,22 @@ force-$(ACTIVATE):
 # Install beastling to the virtualenv
 beastling_ve/bin/beastling: $(ACTIVATE)
 	source $(ACTIVATE) && \
-	pip install beastling
+		pip install beastling
+has_ete: $(ACTIVATE)
+	source $(ACTIVATE) && \
+		pip install ete2 && \
+		python -c 'import ete2' && \
+		echo "YES" > has_ete
+has_scipy: $(ACTIVATE)
+	source $(ACTIVATE) && \
+		pip install scipy && \
+		python -c 'import scipy' && \
+		echo "YES" > has_scipy
+has_numpy: $(ACTIVATE)
+	source $(ACTIVATE) && \
+		pip install numpy && \
+		python -c 'import numpy' && \
+		echo "YES" > has_numpy
 
 ## Install beast:
 # Check java

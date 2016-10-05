@@ -48,7 +48,7 @@ clean: clean_beast
 	rm -f examples/indoeuropean/mcct.pdf
 
 .PHONY: examples
-examples: austronesian indoeuropean
+examples: examples/austronesian/table.tex examples/indoeuropean/table.tex
 
 examples/austronesian/austronesian.xml: $(BEASTLING_BIN) $(ACTIVATE)
 	source $(ACTIVATE) && \

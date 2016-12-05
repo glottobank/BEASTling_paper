@@ -35,7 +35,7 @@ def make_tables(ranked_means):
     fp.write("\\end{tabular}\n")
     
     fp = open("supp_feature_table.tex", "w")
-    fp.write("""\\begin{tabular}{|c|l|}
+    fp.write("""\\begin{tabular}{|c|p{0.75\linewidth}|}
 	\\hline
 	WALS feature ID & WALS feature Name  \\\\ \hline \n""")
     f_ids = [f_id.split(":")[-1] for (rate, f_id) in ranked_means]

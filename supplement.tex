@@ -16,8 +16,8 @@
 
 \begin{document}
 
-\title{Supplementary Material}
-\author{Luke Maurits, Robert Forkel}
+\title{Supplementary Material for \emph{BEASTling: a software tool for linguistic phylogenetics using BEAST 2}}
+\author{Luke Maurits, Robert Forkel, Gereon Kaiping, Quentin Atkinson, Russell Gray}
 \maketitle
 
 \section{Indo-European example configuration}
@@ -34,13 +34,13 @@
 
 \section{Austronesian language set and tree derivation}
 
-The maximum clade credibility tree from Gray et. al.'s 2009 publication contains 400 Austronesian languages, identified by written names such as ``Sediq'', ``Bunan'', ``CentralAmis''.  Along with the tree, Simon Greenhill kindly provided us with a file mapping the 400 unique names to ISO codes, to facilitate attaching WALS data to the tree.  However, some of the named languages have no corresponding ISO code, and some ISO codes are used for multiple named languages.  The final set of languages used for our example analysis, and their association with languges in WALS, was derived programmatically as follows.
+The maximum clade credibility tree from Gray et. al.'s 2009 publication contains 400 Austronesian languages, identified by written names such as ``Sediq'', ``Bunan'', ``CentralAmis''.  Along with the tree, Simon Greenhill kindly provided us with a file mapping the 400 unique names to ISO codes, to facilitate attaching WALS data to the tree (the majority of languages in WALS have ISO codes assigned to them).  However, some of the languages in the reference tree had no corresponding ISO code, and some ISO codes were used for multiple named languages.  Similarly, many distinct languages in WALS are assigned the same ISO code.  Achieving a unique mapping between languages in WALS and languages in the reference tree is therefore not a straightforward process.  The final set of languages used for our example analysis, and their association with languges in WALS, was derived programmatically as follows.
 
-First, all named languages in the 400 taxa tree which were not mapped to ISO codes were discarded.  After this process, 395 of the original 400 languages remain in the tree.
+First, all named languages in the 400 taxa tree which were not mapped to ISO codes were discarded.  After this process, 395 of the original 400 languages remained in the tree.
 
-Next, all ISO codes which mapped to multiple named Austronesian languages were identified.  For each of these codes, we compared the list of all the names associated with that code in the Austronesian tree with the list of all the names of languages in WALS associated with that code.  After converting all names to lowercase, if there was exactly one name which is common to both lists, then the WALS language with that name is associated with the language on the Austronesian tree associated with that name, and all other languages on the Austronesian tree associated with that ISO code are removed.  If there is no such matching name, then \emph{all} languages on the Austronesian tree corresponding to that ISO code are removed.  After this process, 332 of the original 400 languages remain in the tree, with 332 unique ISO codes.
+Next, all ISO codes which mapped to multiple named Austronesian languages were identified.  For each of these codes, we compared the list of all the names associated with that code in the Austronesian tree with the list of all the names of languages in WALS associated with that code.  After converting all names to lowercase, if there was exactly one name which was common to both lists, then the WALS language with that name was associated with the language on the Austronesian tree associated with that name, and all other languages on the Austronesian tree associated with that ISO code were removed.  If there was no such matching name, then \emph{all} languages on the Austronesian tree corresponding to that ISO code were removed.  After this process, 332 of the original 400 languages remained in the tree, with 332 unique ISO codes.
 
-These 332 ISO codes map to a set of languages in WALS, and some codes map to multiple languages.  We resolve these duplicates in a similar manner to our resolution for duplicated ISO codes in the Austronesian tree.  If an ISO code is associated with multiple WALS languages, but exactly one WALS language has a name which matches the (unique) name associated with that ISO code in the 332 leaf tree, then that WALS language is retained and all others sharing its ISO code are removed.  If no such match can be found, all languages with that ISO code are removed.  After this process, 169 WALS languages are mapped to the tree via unique ISO codes.
+These 332 ISO codes map to a set of languages in WALS, and some ISO codes map to multiple languages.  We resolved these duplicates in a similar manner to our resolution for duplicated ISO codes in the Austronesian tree.  If an ISO code was associated with multiple WALS languages, but exactly one WALS language had a name which matched the (unique) name associated with that ISO code in the Austronesian tree, then that WALS language was retained and all others sharing its ISO code were removed.  If no such match could be found, all languages with that ISO code were removed.  After this process, 169 WALS languages are mapped to the tree via unique ISO codes.
 
 The final languages' ISO codes and their names in the original Austronesian tree file are shown in Table \ref{tab:langs}.  The WALS features for which these languages have data are shown in Table \ref{tab:features}.
 

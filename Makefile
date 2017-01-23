@@ -9,17 +9,17 @@ BEASTLING_BIN ?= $(PY_ENV)/bin/beastling
 # Clean
 .PHONY: clean_beast
 clean_beast:
-	rm -r beast/
-	rm java_version
-	rm java_is_8
-	rm beast_version
-	rm beast_is_24
+	rm -fr beast/
+	rm -f java_version
+	rm -f java_is_8
+	rm -f beast_version
+	rm -f beast_is_24
 
 .PHONY: clean_virtualenv
 clean_virtualenv:
 	# We are not cleaning your custom virtualenv.
 	# That way lie accidents!
-	rm -r beastling_ve/
+	rm -rf beastling_ve/
 
 .PHONY: clean
 clean: clean_beast

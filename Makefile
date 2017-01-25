@@ -51,26 +51,26 @@ clean: clean_beast
 examples: examples/austronesian/table.tex examples/indoeuropean/table.tex
 
 examples/austronesian/austronesian.xml: $(BEASTLING_BIN) $(ACTIVATE)
-	source $(ACTIVATE) && \
+	. $(ACTIVATE) && \
 		cd examples/austronesian && \
 		python ./preprocess.py && \
 		beastling --overwrite austronesian.conf
 examples/austronesian/austronesian.log: $(BEAST_BIN) examples/austronesian/austronesian.xml
 	$(BEAST_BIN) -overwrite -working -java examples/austronesian/austronesian.xml
 examples/austronesian/table.tex: $(ACTIVATE) examples/austronesian/austronesian.log
-	source $(ACTIVATE) && \
+	. $(ACTIVATE) && \
 		cd examples/austronesian && \
 		python postprocess.py
 
 examples/indoeuropean/indoeuropean.xml: $(BEASTLING_BIN) $(ACTIVATE)
-	source $(ACTIVATE) && \
+	. $(ACTIVATE) && \
 		cd examples/indoeuropean && \
 		python preprocess.py && \
 		beastling --overwrite indoeuropean.conf
 examples/indoeuropean/indoeuropean.log: $(BEAST_BIN) examples/indoeuropean/indoeuropean.xml
 	$(BEAST_BIN) -overwrite -working -java examples/indoeuropean/indoeuropean.xml
 examples/indoeuropean/table.tex: $(ACTIVATE) has_ete has_scipy has_numpy examples/indoeuropean/indoeuropean.log
-	source $(ACTIVATE) && \
+	. $(ACTIVATE) && \
 		cd examples/indoeuropean && \
 		python postprocess.py
 
@@ -97,20 +97,20 @@ force-$(ACTIVATE):
 	$(PYTHON) virtualenv-15.0.3/virtualenv.py $(PY_ENV)
 # Install beastling to the virtualenv
 beastling_ve/bin/beastling: $(ACTIVATE)
-	source $(ACTIVATE) && \
+	. $(ACTIVATE) && \
 		pip install beastling
 has_ete: $(ACTIVATE)
-	source $(ACTIVATE) && \
+	. $(ACTIVATE) && \
 		pip install ete2 && \
 		python -c 'import ete2' && \
 		echo "YES" > has_ete
 has_scipy: $(ACTIVATE)
-	source $(ACTIVATE) && \
+	. $(ACTIVATE) && \
 		pip install scipy && \
 		python -c 'import scipy' && \
 		echo "YES" > has_scipy
 has_numpy: $(ACTIVATE)
-	source $(ACTIVATE) && \
+	. $(ACTIVATE) && \
 		pip install numpy && \
 		python -c 'import numpy' && \
 		echo "YES" > has_numpy

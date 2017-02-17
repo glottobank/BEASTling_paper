@@ -130,7 +130,7 @@ java_is_8:
 beast/distfiles/beast.tgz:
 	mkdir -p beast/distfiles
 	curl -Lo beast/distfiles/beast.tgz \
-		"https://github.com/CompEvol/beast2/releases/download/v2.4.3/BEAST.v2.4.3.Linux.tgz"
+		"https://github.com/CompEvol/beast2/releases/download/v2.4.5/BEAST.v2.4.5.Linux.tgz"
 # Unpack core
 beast/beast/bin/beast: beast/distfiles/beast.tgz
 	cd beast/ && \

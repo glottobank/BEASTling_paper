@@ -69,7 +69,7 @@ examples/indoeuropean/indoeuropean.xml: $(BEASTLING_BIN) $(ACTIVATE)
 		beastling --overwrite indoeuropean.conf
 examples/indoeuropean/indoeuropean.log: $(BEAST_BIN) examples/indoeuropean/indoeuropean.xml
 	$(BEAST_BIN) -overwrite -working -java examples/indoeuropean/indoeuropean.xml
-examples/indoeuropean/table.tex: $(ACTIVATE) has_ete has_scipy has_numpy examples/indoeuropean/indoeuropean.log
+examples/indoeuropean/table.tex: $(ACTIVATE) has_ete has_phyltr has_scipy has_numpy examples/indoeuropean/indoeuropean.log
 	. $(ACTIVATE) && \
 		cd examples/indoeuropean && \
 		python postprocess.py
@@ -104,6 +104,11 @@ has_ete: $(ACTIVATE)
 		pip install ete2 && \
 		python -c 'import ete2' && \
 		echo "YES" > has_ete
+has_phyltr: $(ACTIVATE)
+	. $(ACTIVATE) && \
+		pip install phyltr && \
+		python -c 'import phyltr' && \
+		echo "YES" > has_phyltr
 has_scipy: $(ACTIVATE)
 	. $(ACTIVATE) && \
 		pip install scipy && \

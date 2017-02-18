@@ -4,79 +4,73 @@ import subprocess
 import sys
 
 import ete2
+try:
+    import ete2.treeview
+    _CAN_PLOT = True
+except ImportError:
+    _CAN_PLOT = False
 import scipy.stats
 
 sys.path.append("..")
 import utils
 
+def main():
+    """
+    Postanalysis of the indoeuropean.log and indoeuropean.nex files generated
+    by BEAST when the Indo-European analysis is run.  This will find the
+    maximum clade credibility tree and try to generate a plot of it, as well
+    as compute the ranking of meaning classes by posterior mean mutation rate
+    and compare this ranking to others from the literature.
+    """
+
+    print("Finding maximum clade credibility tree...")
+    find_mcc_tree()
+    if _CAN_PLOT:
+        print("Plotting maximum clade credibility tree...")
+        plot_mcc_tree()
+    else:
+        print("Skipping plotting tree due to lack of PyQt4 support. :(")
+    print("Computing posterior mean paramter estimates...")
+    ranked_means = utils.write_means("indoeuropean.log", "parameter_means.csv")
+    print("Computing ranking correlations...")
+    compute_ranking_correls(ranked_means)
+    print("Generating LaTeX table...")
+    make_table(ranked_means)
+
 def find_mcc_tree():
+    """
+    Use the phyltr program to find the maximum clade credibility tree
+    for this analysis, and save it to the file mcct.nex.
+    """
     command = "phyltr cat indoeuropean.nex | phyltr support --sort | " \
             "head -n 1 > mcct.nex"
     subprocess.call(command, shell=True)
 
+def plot_mcc_tree():
+    """
+    Use ETE2 to save a PDF image of the tree stored in the mcct.nex file.
+    """
+    t = ete2.Tree("mcct.nex")
+    ts = ete2.treeview.TreeStyle()
+    ts.show_scale = False
+    ts.show_branch_support = True
+    t.render("mcct.pdf", ultrametric, tree_style=ts)
+
 def ultrametric(node):
+    """
+    ETE2 styling function to make the tree appear ultrametric.
+    """
     node.img_style["vt_line_width"]=0
     if node.is_leaf():
         node.img_style["size"]=5
     else:
         node.img_style["size"]=0
-#        if node.dist > 0.05:
-#            node.add_face(ete2.TextFace("%.2f" % node.support, fsize=4),column=0,position="branch-top")
-
-def plot_mcc_tree():
-    t = ete2.Tree("mcct.nex")
-    ts = ete2.TreeStyle()
-    ts.show_scale = False
-    ts.show_branch_support = True
-    t.render("mcct.pdf", ultrametric, tree_style=ts)
-
-def load_starostin_ranking():
-    ranking = []
-    fp = open("Starostin-2007-110.tsv", "r")
-    r = csv.DictReader(fp, delimiter="\t")
-    for row in r:
-        word = row["GLOSS"].lower()
-        word = "walk" if word =="walk(go)" else word
-        rank = int(row["NUMBER"])
-        ranking.append((rank, word))
-    fp.close()
-    ranking.sort()
-    return [w for (n,w) in ranking]
-
-def load_swadesh_ranking():
-    ranking = []
-    fp = open("Swadesh-1955-215.tsv", "r")
-    r = csv.DictReader(fp, delimiter="\t")
-    for row in r:
-        word = row["ENGLISH"].lower()
-        if word.startswith("*"):
-            word = word[1:]
-        if "(" in word:
-            word = word.split("(")[0].strip()
-        rank = int(row["STABILITY_SCORE"])
-        ranking.append((rank, word))
-    fp.close()
-    ranking.sort()
-    ranking.reverse()
-    return [w for (n,w) in ranking]
-
-def load_pagel_ranking():
-    ranking = []
-    fp = open("Pagel-2007-200.tsv", "r")
-    r = csv.DictReader(fp, delimiter="\t")
-    for row in r:
-        word = row["ENGLISH"].lower()
-        if "(" in word:
-            word = word.split("(")[0].strip()
-        if word.startswith("to "):
-            word = word.split(" ",1)[1]
-        rank = float(row["MEAN_RATE"])
-        ranking.append((rank, word))
-    fp.close()
-    ranking.sort()
-    return [w for (n,w) in ranking]
 
 def compute_ranking_correls(ranked_means):
+    """
+    Compute the correlation coefficient between our ranking of meaning
+    classes by stability against three other published rankings.
+    """
     ranked_means = [w.split(":")[-1].lower() for (r,w) in ranked_means]
     ranked_means = [w[:-4] if w.endswith(" (v)") else w for w in ranked_means]
 
@@ -119,8 +113,66 @@ def compute_ranking_correls(ranked_means):
     fp.write("%s, %f\n" % ("Pagel", pagel_correl))
     fp.close()
 
+def load_starostin_ranking():
+    """
+    Load the ranking of meaning classes by stability provided by Starostin.
+    """
+    ranking = []
+    fp = open("Starostin-2007-110.tsv", "r")
+    r = csv.DictReader(fp, delimiter="\t")
+    for row in r:
+        word = row["GLOSS"].lower()
+        word = "walk" if word =="walk(go)" else word
+        rank = int(row["NUMBER"])
+        ranking.append((rank, word))
+    fp.close()
+    ranking.sort()
+    return [w for (n,w) in ranking]
+
+def load_swadesh_ranking():
+    """
+    Load the ranking of meaning classes by stability provided by Swadesh.
+    """
+    ranking = []
+    fp = open("Swadesh-1955-215.tsv", "r")
+    r = csv.DictReader(fp, delimiter="\t")
+    for row in r:
+        word = row["ENGLISH"].lower()
+        if word.startswith("*"):
+            word = word[1:]
+        if "(" in word:
+            word = word.split("(")[0].strip()
+        rank = int(row["STABILITY_SCORE"])
+        ranking.append((rank, word))
+    fp.close()
+    ranking.sort()
+    ranking.reverse()
+    return [w for (n,w) in ranking]
+
+def load_pagel_ranking():
+    """
+    Load the ranking of meaning classes by stability provided by Pagel.
+    """
+    ranking = []
+    fp = open("Pagel-2007-200.tsv", "r")
+    r = csv.DictReader(fp, delimiter="\t")
+    for row in r:
+        word = row["ENGLISH"].lower()
+        if "(" in word:
+            word = word.split("(")[0].strip()
+        if word.startswith("to "):
+            word = word.split(" ",1)[1]
+        rank = float(row["MEAN_RATE"])
+        ranking.append((rank, word))
+    fp.close()
+    ranking.sort()
+    return [w for (n,w) in ranking]
 
 def make_table(ranked_means):
+    """
+    Generate a LaTeX table of fastest and slowest meaning classes and save it
+    in the file table.tex for inclusion in the manuscript.
+    """
     fp = open("table.tex", "w")
     fp.write("""\\begin{tabular}{|l|c||l|c|}
     \\hline
@@ -137,20 +189,6 @@ def make_table(ranked_means):
     fp.write("\\hline\n")
     fp.write("\\end{tabular}\n")
     fp.close()
-
-def main():
-
-    print("Finding maximum clade credibility tree...")
-    find_mcc_tree()
-    print("Plotting maximum clade credibility tree...")
-    plot_mcc_tree()
-    print("Computing posterior mean paramter estimates...")
-    ranked_means = utils.write_means("indoeuropean.log", "parameter_means.csv")
-    print("Computing ranking correlations...")
-    compute_ranking_correls(ranked_means)
-    print("Generating LaTeX table...")
-    make_table(ranked_means)
-
 
 if __name__ == "__main__":
     main()

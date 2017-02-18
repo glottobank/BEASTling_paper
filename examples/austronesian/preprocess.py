@@ -8,91 +8,31 @@ import newick
 sys.path.append("..")
 import utils
 
-def load_wals_iso_names():
-    fp = open("language.csv","r")
-    reader = csv.DictReader(fp)
-    mapping = {}
-    for row in reader:
-        if row["iso_code"] != "?":
-            mapping[row["Name"]] = row["iso_code"]
-    fp.close()
-    all_isos = [i for i in mapping.values()]
-    return mapping
-
-def reformat_wals(exclusions):
-    fp_in = open("language.csv","r")
-    fp_out = open("wals_data.csv","w")
-
-    reader = csv.DictReader(fp_in)
-
-    fn = reader.fieldnames
-    fn = [name.split()[0] if name[0].isdigit() else name for name in fn]
-    fn = ["iso" if name == "iso_code" else name for name in fn]
-    fn = [name for name in fn if name == "iso" or name[0].isdigit()]
-    fn.remove("95A")
-    fn.remove("96A")
-    fn.remove("97A")
-    fn.remove("iso")
-    fn.insert(0,"iso")
-
-    writer = csv.DictWriter(fp_out, fn)
-    writer.writeheader()
-
-    for row in reader:
-        newrow = {}
-        if row["Name"].lower() in exclusions:
-            continue
-        for key in row.keys():
-            newkey = key.split()[0] if key[0].isdigit() else key
-            newkey = "iso" if newkey == "iso_code" else newkey
-            if newkey not in fn:
-                continue
-            val = row[key]
-            newval = val.split()[0] if val and val[0].isdigit() else val
-            newval = newval if newval else "?"
-            newrow[newkey] = newval
-        if newrow["iso"] == "?":
-                continue
-        writer.writerow(newrow)
-    
-    fp_in.close()
-    fp_out.close()
-
-def clean_reference_tree():
-    fp_in = open("a400-m1pcv-time.mcct.trees", "r")
-    fp_out = open("austronesian_reference.nex", "w")
-    for line in fp_in:
-        # Skip comments and NEXUS cruft
-        if not line.startswith("tree"):
-            continue
-        # Trim "tree TREE1 = " from tree line
-        line = line[13:]
-        fp_out.write(line)
-    fp_in.close()
-    fp_out.close()
-
-def load_austro_iso_names():
-    fp = open("iso.austronesian.txt", "r")
-    untranslatable = []
-    mapping = {}
-    # Separate languages with ISO codes from those without
-    for line in fp:
-        iso, lang = [x.strip() for x in line.split("\t")]
-        mapping[lang] = iso
-    fp.close()
-    return mapping
-
-def make_phyltr_rename_file(translation):
-    fp = open("phyltr_rename.txt", "w")
-    for lang in translation:
-        fp.write("%s:%s\n" % (lang, translation[lang]))
-    fp.close()
+def main():
+    """
+    Prepare the MCC tree and WALS data for the Austronesian analysis.  This
+    involves establishing a duplicate-free mapping from language names to ISO
+    codes and pruning the tree accordingly.  The WALS data has to be
+    reformatted into CLDF format as well,
+    """
+    print("Resolving ISO codes...")
+    a_exclusions, a_mapping, w_exclusions = resolve_languages()
+    print("Reformatting WALS data...")
+    reformat_wals(w_exclusions)
+    print("Preparing reference tree...")
+    clean_reference_tree()
+    adjust_reference_tree(a_exclusions, a_mapping)
 
 def resolve_languages():
+    """
+    Programmatically establish a duplicate-free mapping between Austronesian
+    language family names and ISO codes so we can link WALS data to the MCC
+    tree.
+    """
     a_mapping = load_austro_iso_names()
     w_mapping = load_wals_iso_names()
-    a_exclusions = []
-    w_exclusions = []
+    a_exclusions = []   # Austronesian MCC langs to drop
+    w_exclusions = []   # WALS langs to drop
 
     a_exclusions.extend(l.lower() for l in a_mapping if a_mapping[l] == "XXX")
 
@@ -136,11 +76,44 @@ def resolve_languages():
         if l.lower() in set(w_exclusions):
             w_mapping.pop(l)
 
+    # Save the mapping to a LaTeX table
     make_table(a_mapping, w_mapping)
 
     return a_exclusions, a_mapping, w_exclusions
 
+def load_austro_iso_names():
+    """
+    Build a dictionary mapping Austronesian language names to ISO codes.
+    """
+    fp = open("iso.austronesian.txt", "r")
+    untranslatable = []
+    mapping = {}
+    # Separate languages with ISO codes from those without
+    for line in fp:
+        iso, lang = [x.strip() for x in line.split("\t")]
+        mapping[lang] = iso
+    fp.close()
+    return mapping
+
+def load_wals_iso_names():
+    """
+    Build a dictionary mapping WALS language names to ISO codes.
+    """
+    fp = open("language.csv","r")
+    reader = csv.DictReader(fp)
+    mapping = {}
+    for row in reader:
+        if row["iso_code"] != "?":
+            mapping[row["Name"]] = row["iso_code"]
+    fp.close()
+    all_isos = [i for i in mapping.values()]
+    return mapping
+
 def make_table(a_mapping, w_mapping):
+    """
+    Generate a LaTeX table of the language mappings and save it in the file
+    supp_language_table.tex for inclusion in the manuscript.
+    """
     fp = open("supp_language_table.tex", "w")
     fp.write("""\\begin{tabular}{|c|l|l||c|l|l|}
     \\hline
@@ -160,7 +133,70 @@ def make_table(a_mapping, w_mapping):
     fp.write("\\end{tabular}\n")
     fp.close()
 
+def reformat_wals(exclusions):
+    """
+    Convert the WALS data file to CLDF format.
+    """
+    fp_in = open("language.csv","r")
+    fp_out = open("wals_data.csv","w")
+
+    reader = csv.DictReader(fp_in)
+
+    fn = reader.fieldnames
+    fn = [name.split()[0] if name[0].isdigit() else name for name in fn]
+    fn = ["iso" if name == "iso_code" else name for name in fn]
+    fn = [name for name in fn if name == "iso" or name[0].isdigit()]
+    fn.remove("95A")
+    fn.remove("96A")
+    fn.remove("97A")
+    fn.remove("iso")
+    fn.insert(0,"iso")
+
+    writer = csv.DictWriter(fp_out, fn)
+    writer.writeheader()
+
+    for row in reader:
+        newrow = {}
+        if row["Name"].lower() in exclusions:
+            continue
+        for key in row.keys():
+            newkey = key.split()[0] if key[0].isdigit() else key
+            newkey = "iso" if newkey == "iso_code" else newkey
+            if newkey not in fn:
+                continue
+            val = row[key]
+            newval = val.split()[0] if val and val[0].isdigit() else val
+            newval = newval if newval else "?"
+            newrow[newkey] = newval
+        if newrow["iso"] == "?":
+                continue
+        writer.writerow(newrow)
+    
+    fp_in.close()
+    fp_out.close()
+
+def clean_reference_tree():
+    """
+    Produce a copy of the file containing the MCC tree which consists of just
+    a Newick-formatted tree, without any extraneous NEXUS syntax.
+    """
+    fp_in = open("a400-m1pcv-time.mcct.trees", "r")
+    fp_out = open("austronesian_reference.nex", "w")
+    for line in fp_in:
+        # Skip comments and NEXUS cruft
+        if not line.startswith("tree"):
+            continue
+        # Trim "tree TREE1 = " from tree line
+        line = line[13:]
+        fp_out.write(line)
+    fp_in.close()
+    fp_out.close()
+
 def adjust_reference_tree(kill_list, translation):
+    """
+    Remove unwanted languages from the reference tree and change the names of
+    the languages we do want to ISO codes.
+    """
     tree = newick.read("austronesian_reference.nex")[0]
     tree.remove_internal_names()
     for n in tree.walk():
@@ -190,16 +226,6 @@ def adjust_reference_tree(kill_list, translation):
     for iso in isos:
         fp.write("%s\n" % iso)
     fp.close()
-
-def main():
-
-    print("Resolving ISO codes...")
-    a_exclusions, a_mapping, w_exclusions = resolve_languages()
-    print("Reformatting WALS data...")
-    reformat_wals(w_exclusions)
-    print("Preparing reference tree...")
-    clean_reference_tree()
-    adjust_reference_tree(a_exclusions, a_mapping)
 
 if __name__ == "__main__":
     main()

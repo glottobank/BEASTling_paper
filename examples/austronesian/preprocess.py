@@ -219,7 +219,7 @@ def adjust_reference_tree(kill_list, translation):
     # All of the above has likely left some redundant tree nodes, i.e. nodes
     # with only one descendant, so get rid of these
     tree.remove_redundant_nodes()
-    newick.write([tree], "austronesian.nex")
+    newick.write([tree], "processed_austronesian_reference.nex")
     # Save a BEASTling compatible list of ISO codes
     isos = [n.name for n in tree.walk() if n.is_leaf]
     fp = open("language_list.txt", "w")

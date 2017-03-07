@@ -90,12 +90,12 @@ examples/indoeuropean/table.tex: $(ACTIVATE) has_ete has_phyltr has_scipy has_nu
 # Targets for building the paper:
 .PHONY: paper
 paper:
-	xelatex beastling
+	pdflatex beastling
 	bibtex beastling
-	xelatex beastling
-	xelatex beastling
-	xelatex supplement
-	xelatex supplement
+	pdflatex beastling
+	pdflatex beastling
+	pdflatex supplement
+	pdflatex supplement
 
 ## Create beastling virtual environment:
 # Make sure we can use virtualenv

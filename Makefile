@@ -20,9 +20,14 @@ clean_virtualenv:
 	# We are not cleaning your custom virtualenv.
 	# That way lie accidents!
 	rm -rf beastling_ve/
+	rm -f has_ete
+	rm -f has_newick
+	rm -f has_numpy
+	rm -f has_phyltr
+	rm -f has_scipy
 
 .PHONY: clean
-clean: clean_beast
+clean: clean_beast clean_virtualenv
 	# Delete TeX cruft
 	rm -f beastling.aux
 	rm -f beastling.bbl
@@ -42,10 +47,18 @@ clean: clean_beast
 	rm -f examples/*/*.nex
 	rm -f examples/*/*.state
 	# Delete processed data files
+	rm -f examples/austronesian/wals_data.csv
 	rm -f examples/indoeuropean/indoeuropean.csv
 	# Delete results
+	rm -f examples/austronesian/language_list.txt
+	rm -f examples/austronesian/parameter_means.csv
+	rm -f examples/austronesian/supp_language_table.tex
+	rm -f examples/austronesian/supp_feature_table.tex
+	rm -f examples/austronesian/table.tex
+	rm -f examples/indoeuropean/mcct.tiff
 	rm -f examples/indoeuropean/parameter_means.csv
-	rm -f examples/indoeuropean/mcct.pdf
+	rm -f examples/indoeuropean/ranking_correlations.csv
+	rm -f examples/indoeuropean/table.tex
 
 .PHONY: examples
 examples: examples/austronesian/table.tex examples/indoeuropean/table.tex

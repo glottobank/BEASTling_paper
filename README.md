@@ -25,10 +25,19 @@ the repository, everything will be deleted except for the original data files,
 the BEASTling configuration files and the pre/post-processing scripts.  You
 should have the following:
 
+### Paper related files
+
+* `beastling.tex` - LaTeX source for the paper
+* `supplement.tex` - LaTeX source for the supplementary material
+* `bibliography.bib` - Bibliography file
+
+### Austronesian example related files
+
 * `examples/austronesian/language.csv` - Raw WALS data, as available from
   http://wals.info/static/download/wals-language.csv.zip
 * `examples/austronesian/a400-m1pcv-time.mcct.trees` - Austronesian summary
-  tree from Gray et al's 2009 Science paper (kindly provided by Simon Greenhill)
+  tree from [Gray et al's 2009 Science paper](http://science.sciencemag.org/content/323/5913/479)
+  (kindly provided by Simon Greenhill)
 * `examples/austronesian/iso.austronesian.txt` - Mapping from Austronesian
   family names as used in summary tree to ISO codes (kindly provided by Simon
   Greenhill)
@@ -36,7 +45,11 @@ should have the following:
 * `examples/austronesian/austronesian.conf` - BEASTling configuration file
 * `examples/austronesian/postprocess.py` - Postprocessing script (described
   below)
+
+### Indo-European example related files
+
 * `examples/indoeuropean/PIE.csv` - Raw Indo-European cognate data (kindly
+  provided by Mattis List)
 * `examples/indoeuropean/Pagel-2007-200.tsv` - Pagel et al's meaning class
   stability ranking (kindly provided by Mattis List)
 * `examples/indoeuropean/Starostin-2007-110.tsv` - Starostin's meaning class
@@ -72,18 +85,24 @@ several items of software, most obviously but not limited to BEASTling and BEAST
 The make target will attempt to ease you through this as follows.
 
  * BEAST 2.4.5 will be downloaded from the official BEAST 2 GitHub repository
-   (please note it is UP TO YOU to have a working version of Java 8 installed).
  * If you do not have `virtualenv` installed, it will be downloaded from the
    official virtualenv GitHub repository and decompressed in the current
    directory.
  * The virtualenv will be activated and `pip` will be used to install the
    following dependencies:
-     * BEASTling (used to create BEAST XML files)
-     * [phyltr](https://github.com/lmaurits/phyltr/) (used to find maximum clade credibility trees)
-     * ete2 (used to create Figure 2)
-   Please note that none of this will affect your ordinary day-to-day Python
-   environment.  The virtual environment created by Make will be deleted the
-   next time you run `make clean`.
+     * [BEASTling](https://github.com/lmaurits/BEASTling) (used to create BEAST
+       XML files)
+     * [ete2](http://etetoolkit.org/) (used to create Figure 2)
+     * [python-newick](https://github.com/glottobank/python-newick/) (use to
+       preprocess trees)
+     * [phyltr](https://github.com/lmaurits/phyltr/) (used to find maximum clade
+       credibility trees)
+     * [scipy](https://www.scipy.org/) (used to compute correlation coeffeicients
+       between meaning class stability rankings)
+
+Please note that none of this will affect your ordinary day-to-day BEAST or
+Python environments.  The local BEAST installation and the Python virtual
+environment created by Make will be deleted the next time you run `make clean`.
 
 Please note that the following are up to you:
 
@@ -104,9 +123,10 @@ other preferred tool.
 ## Make paper
 
 Running `make paper` in your local checkout of the repository will run LaTeX and
-BiBTeX to produce the paper as `beastling.pdf`.  The LaTeX `\include` command
+BiBTeX to produce the paper as `beastling.pdf`.  The LaTeX `\include{}` command
 will be used to pull in tables produced by the postprocessing scripts and the
-`includegraphics` command will be used to pull in figures produced by the same
+`\includegraphics{}` command will be used to pull in figures produced by the same
 scripts.  If you run `make paper` after `make clean` but before `make examples`,
-it will fail because these files will not be found.  It's up to you to have a
-working LaTeX environment installed.
+it will fail because these files will not be found.
+
+It's up to you to have a working LaTeX environment installed.

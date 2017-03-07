@@ -123,7 +123,7 @@ other preferred tool.
 ## Make paper
 
 Running `make paper` in your local checkout of the repository will run LaTeX and
-BiBTeX to produce the paper as `beastling.pdf`.  The LaTeX `\include{}` command
+BiBTeX to produce the paper as `beastling.pdf`.  The LaTeX `\input{}` command
 will be used to pull in tables produced by the postprocessing scripts and the
 `\includegraphics{}` command will be used to pull in figures produced by the same
 scripts.  If you run `make paper` after `make clean` but before `make examples`,

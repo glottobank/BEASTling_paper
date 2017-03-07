@@ -42,7 +42,7 @@ def find_mcc_tree():
     Use the phyltr program to find the maximum clade credibility tree
     for this analysis, and save it to the file mcct.nex.
     """
-    command = "phyltr cat indoeuropean.nex | phyltr support --sort | " \
+    command = "phyltr cat -b 10 indoeuropean.nex | phyltr support --sort | " \
             "head -n 1 > mcct.nex"
     subprocess.call(command, shell=True)
 

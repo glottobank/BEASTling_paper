@@ -70,7 +70,7 @@ examples/austronesian/austronesian.xml: $(BEASTLING_BIN) $(ACTIVATE)
 		beastling --overwrite austronesian.conf
 examples/austronesian/austronesian.log: $(BEAST_BIN) examples/austronesian/austronesian.xml
 	$(BEAST_BIN) -overwrite -working -java examples/austronesian/austronesian.xml
-examples/austronesian/table.tex: $(ACTIVATE) examples/austronesian/austronesian.log
+examples/austronesian/table.tex: $(ACTIVATE) has_newick examples/austronesian/austronesian.log
 	. $(ACTIVATE) && \
 		cd examples/austronesian && \
 		python postprocess.py
@@ -117,6 +117,11 @@ has_ete: $(ACTIVATE)
 		pip install ete2 && \
 		python -c 'import ete2' && \
 		echo "YES" > has_ete
+has_newick: $(ACTIVATE)
+	. $(ACTIVATE) && \
+		pip install newick && \
+		python -c 'import newick' && \
+		echo "YES" > has_newick
 has_phyltr: $(ACTIVATE)
 	. $(ACTIVATE) && \
 		pip install phyltr && \

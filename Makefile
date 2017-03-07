@@ -48,6 +48,8 @@ clean: clean_beast clean_virtualenv
 	rm -f examples/*/*.state
 	# Delete processed data files
 	rm -f examples/austronesian/wals_data.csv
+	rm -f examples/austronesian/austronesian_reference.nex
+	rm -f examples/austronesian/processed_austronesian_reference.nex
 	rm -f examples/indoeuropean/indoeuropean.csv
 	# Delete results
 	rm -f examples/austronesian/language_list.txt

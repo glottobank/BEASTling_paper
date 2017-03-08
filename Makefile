@@ -23,8 +23,10 @@ clean_virtualenv:
 	rm -f has_ete
 	rm -f has_newick
 	rm -f has_numpy
+	rm -f has_pandas
 	rm -f has_phyltr
 	rm -f has_scipy
+	rm -f has_seaborn
 
 .PHONY: clean
 clean: clean_beast clean_virtualenv
@@ -54,10 +56,12 @@ clean: clean_beast clean_virtualenv
 	# Delete results
 	rm -f examples/austronesian/language_list.txt
 	rm -f examples/austronesian/parameter_means.csv
+	rm -f examples/indoeuropean/rate_variation.eps
 	rm -f examples/austronesian/supp_language_table.tex
 	rm -f examples/austronesian/supp_feature_table.tex
 	rm -f examples/austronesian/table.tex
-	rm -f examples/indoeuropean/mcct.tiff
+	rm -f examples/indoeuropean/mcct.eps
+	rm -f examples/indoeuropean/category_rates.eps
 	rm -f examples/indoeuropean/parameter_means.csv
 	rm -f examples/indoeuropean/ranking_correlations.csv
 	rm -f examples/indoeuropean/table.tex
@@ -72,7 +76,7 @@ examples/austronesian/austronesian.xml: $(BEASTLING_BIN) $(ACTIVATE)
 		beastling --overwrite austronesian.conf
 examples/austronesian/austronesian.log: $(BEAST_BIN) examples/austronesian/austronesian.xml
 	$(BEAST_BIN) -overwrite -working -java examples/austronesian/austronesian.xml
-examples/austronesian/table.tex: $(ACTIVATE) has_newick examples/austronesian/austronesian.log
+examples/austronesian/table.tex: $(ACTIVATE) has_newick has_seaborn examples/austronesian/austronesian.log
 	. $(ACTIVATE) && \
 		cd examples/austronesian && \
 		python postprocess.py
@@ -84,7 +88,7 @@ examples/indoeuropean/indoeuropean.xml: $(BEASTLING_BIN) $(ACTIVATE)
 		beastling --overwrite indoeuropean.conf
 examples/indoeuropean/indoeuropean.log: $(BEAST_BIN) examples/indoeuropean/indoeuropean.xml
 	$(BEAST_BIN) -overwrite -working -java examples/indoeuropean/indoeuropean.xml
-examples/indoeuropean/table.tex: $(ACTIVATE) has_ete has_phyltr has_scipy has_numpy examples/indoeuropean/indoeuropean.log
+examples/indoeuropean/table.tex: $(ACTIVATE) has_ete has_numpy has_pandas has_phyltr has_scipy has_seaborn examples/indoeuropean/indoeuropean.log
 	. $(ACTIVATE) && \
 		cd examples/indoeuropean && \
 		python postprocess.py
@@ -124,6 +128,11 @@ has_newick: $(ACTIVATE)
 		pip install newick && \
 		python -c 'import newick' && \
 		echo "YES" > has_newick
+has_pandas: $(ACTIVATE)
+	. $(ACTIVATE) && \
+		pip install pandas && \
+		python -c 'import pandas' && \
+		echo "YES" > has_pandas
 has_phyltr: $(ACTIVATE)
 	. $(ACTIVATE) && \
 		pip install phyltr && \
@@ -134,6 +143,11 @@ has_scipy: $(ACTIVATE)
 		pip install scipy && \
 		python -c 'import scipy' && \
 		echo "YES" > has_scipy
+has_seaborn: $(ACTIVATE)
+	. $(ACTIVATE) && \
+		pip install seaborn && \
+		python -c 'import seaborn' && \
+		echo "YES" > has_seaborn
 has_numpy: $(ACTIVATE)
 	. $(ACTIVATE) && \
 		pip install numpy && \

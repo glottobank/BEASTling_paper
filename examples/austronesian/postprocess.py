@@ -2,6 +2,10 @@
 import csv
 import sys
 
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 sys.path.append("..")
 import utils
 
@@ -16,6 +20,8 @@ def main():
     ranked_means = utils.write_means("austronesian.log", "parameter_means.csv")
     print("Generating LaTeX tables...")
     make_tables(ranked_means)
+    print("Generating rate variation figure...")
+    make_figure("rate_variation.eps")
 
 def load_wals_feature_names():
     """
@@ -65,5 +71,35 @@ def make_tables(ranked_means):
     fp.write("\\hline\n""")
     fp.write("\\end{tabular}\n")
     
+def make_figure(filename):
+    """
+    Generate an image file for Figure 4 in the paper, showing the distribution
+    of relative rates amongst WALS features.
+    """
+    # Read mean feature rates
+    fp = open("parameter_means.csv", "r")
+    mean_rates = {}
+    for line in fp:
+        feature, rate = line.strip().split(",")
+        feature = feature.split(":")[-1]
+        mean_rates[feature] = float(rate)
+    fp.close()
+
+    fig = plt.figure()
+    sns.set(style="whitegrid", palette="muted")
+    sns.set_context("paper",font_scale=1.25)
+    bins = (0,0.25,0.75,1.25,1.75,2.25,2.75,3)
+    ax = sns.distplot(mean_rates.values(),bins=bins,
+            hist_kws={"color":"#b5c9eb","linewidth":0})
+    ax.set_xlim(0, 3)
+    ax.set_ylim(0, 1)
+    ax.set(xlabel='Relative rate of change')
+    ax.set(ylabel='Probability')
+    plt.tight_layout()
+    # Make a square plot whose width is half PLoS's maximum
+    fig.set_size_inches(w=7.5/2,h=7.5/2)
+    # Save at PLoS's maximum permitted DPI
+    plt.savefig(filename, dpi=600)
+
 if __name__ == "__main__":
     main()

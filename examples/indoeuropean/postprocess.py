@@ -226,9 +226,32 @@ def make_table(ranked_means):
     bottom_10 = ranked_means[-10:]
     for ((f_rate, f_name),(s_rate,s_name)) in zip(top_10, bottom_10):
         f_name = f_name.split(":")[-1]
+        f_name = f_name.rsplit(" ", 1)[0] if f_name.endswith("(V)") else f_name
         s_name = s_name.split(":")[-1]
+        s_name = s_name.rsplit(" ", 1)[0] if s_name.endswith("(V)") else s_name
         fp.write("  %s & %.2f & %s & %.2f \\\\ \n" % \
                 (f_name, f_rate, s_name, s_rate))
+    fp.write("\\hline\n")
+    fp.write("\\end{tabular}\n")
+    fp.close()
+
+    fp = open("supp_meaning_table.tex", "w")
+    fp.write("""\\begin{tabular}{|l|c||l|c||l|c||l|c|}
+    \\hline
+    Meaning & Category & Meaning & Category & Meaning & Category & Meaning & Category\\\\ \\hline
+
+""")
+    feature_names = [f.split(":")[-1] for (r,f) in ranked_means]
+    feature_names.sort(key=lambda s: s.lower())
+    col1 = feature_names[0:25]
+    col2 = feature_names[25:50]
+    col3 = feature_names[50:75]
+    col4 = feature_names[75:]
+    for a,b,c,d in zip(col1,col2,col3,col4):
+        x,y,z,w = [get_meaning_category(i) or "Excluded" for i in (a,b,c,d)]
+        # Lop off (V)s (we needed them above for get_meaning_category to work)
+        a,b,c,d = [f.rsplit(" ", 1)[0] if f.endswith("(V)") else f for f in (a,b,c,d)]
+        fp.write("%s & %s & %s & %s & %s & %s & %s & %s\\\\ \n" % (a, x, b, y, c, z, d, w))
     fp.write("\\hline\n")
     fp.write("\\end{tabular}\n")
     fp.close()
@@ -247,33 +270,11 @@ def make_figure(filename):
         mean_rates[feature] = float(rate)
     fp.close()
 
-    # Define categories
-    def get_category(meaning):
-        if meaning.endswith("(V)"):
-            return "Verb"
-        elif meaning in "belly breast ear eye foot hair hand head heart knee liver mouth neck nose tongue tooth skin bone".split():
-            return "Body part"
-        elif meaning in "big cold far full good heavy long near new round short small thin warm dry many".split():
-            return "Adjective"
-        elif meaning in "black green red yellow white".split():
-            return "Colour"
-        elif meaning in "I thou we who what this that all".split():
-            return "Pronoun"
-        # There's only one adverb, so forget it
-        elif meaning == "not":
-            return None
-        # There are only two numbers, so they don't plot well
-        elif meaning in "one two".split():
-            return None
-        # Everything else is a boring old noun
-        else:
-            return "Noun"
-
     # Build a DataFrame
     categories = ["Verb","Noun","Body part","Pronoun","Adjective","Colour"]
     dataframes = []
     for category in categories:
-        dataframes.append(pd.DataFrame({category:[mean_rates[f] for f in mean_rates if get_category(f) == category]}))
+        dataframes.append(pd.DataFrame({category:[mean_rates[f] for f in mean_rates if get_meaning_category(f) == category]}))
     df = pd.concat(dataframes)
 
     # Plot it
@@ -289,6 +290,27 @@ def make_figure(filename):
     fig.set_size_inches(w=7.5,h=7.5/2)
     # Save at PLoS's maximum permitted DPI
     plt.savefig(filename, dpi=600)
+
+def get_meaning_category(meaning):
+    if meaning.endswith("(V)"):
+        return "Verb"
+    elif meaning in "belly breast ear eye foot hair hand head heart knee liver mouth neck nose tongue tooth skin bone".split():
+        return "Body part"
+    elif meaning in "big cold far full good heavy long near new round short small thin warm dry many".split():
+        return "Adjective"
+    elif meaning in "black green red yellow white".split():
+        return "Colour"
+    elif meaning in "I thou we who what this that all".split():
+        return "Pronoun"
+    # There's only one adverb, so forget it
+    elif meaning == "not":
+        return None
+    # There are only two numbers, so they don't plot well
+    elif meaning in "one two".split():
+        return None
+    # Everything else is a boring old noun
+    else:
+        return "Noun"
 
 if __name__ == "__main__":
     main()

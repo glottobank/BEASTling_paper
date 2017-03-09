@@ -74,8 +74,9 @@ examples/austronesian/austronesian.xml: $(BEASTLING_BIN) $(ACTIVATE)
 		cd examples/austronesian && \
 		python ./preprocess.py && \
 		beastling --overwrite austronesian.conf
-examples/austronesian/austronesian.log: $(BEAST_BIN) examples/austronesian/austronesian.xml
-	$(BEAST_BIN) -overwrite -working -java examples/austronesian/austronesian.xml
+examples/austronesian/austronesian.log: $(BEAST_BIN) beast/packages/morph-models/lib/MM.addon.jar examples/austronesian/austronesian.xml
+	export BEAST_ADDON_PATH=./beast/packages && \
+		$(BEAST_BIN) -overwrite -working -java examples/austronesian/austronesian.xml
 examples/austronesian/table.tex: $(ACTIVATE) has_newick has_seaborn examples/austronesian/austronesian.log
 	. $(ACTIVATE) && \
 		cd examples/austronesian && \
@@ -175,4 +176,11 @@ beast_version: java_is_8 $(BEAST_BIN)
 beast_is_24: beast_version
 	grep -F 'v2.4' beast_version && \
 		echo "YES" > beast_is_24
-
+# Download morph-models package
+beast/packages/mm.zip:
+	mkdir -p beast/packages/morph-models
+	curl -Lo beast/packages/morph-models/mm.zip "https://github.com/CompEvol/morph-models/releases/download/1.0.5/MM.addon.v1.0.5.zip"
+# Unpack morph-models package
+beast/packages/morph-models/lib/MM.addon.jar: beast/packages/mm.zip
+	cd beast/packages/morph-models && \
+		unzip mm.zip

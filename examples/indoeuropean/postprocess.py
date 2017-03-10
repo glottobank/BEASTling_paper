@@ -29,6 +29,8 @@ def main():
 
     print("Finding maximum clade credibility tree...")
     find_mcc_tree()
+    print("Computing clade credibilities...")
+    compute_clade_probabilities()
     if _CAN_PLOT:
         print("Plotting maximum clade credibility tree...")
         plot_mcc_tree()
@@ -48,8 +50,17 @@ def find_mcc_tree():
     Use the phyltr program to find the maximum clade credibility tree
     for this analysis, and save it to the file mcct.nex.
     """
-    command = "phyltr cat -b 10 indoeuropean.nex | phyltr support --sort | " \
+    command = "phyltr cat -b 10 --no-annotation indoeuropean.nex | " \
+            "phyltr support --sort | " \
             "head -n 1 > mcct.nex"
+    subprocess.call(command, shell=True)
+
+def compute_clade_probabilities():
+    """
+    Use the phyltr program to compute clade probabilities and save them
+    to the file clades.txt.
+    """
+    command = "phyltr cat -b 10 indoeuropean.nex | phyltr clades > clades.txt"
     subprocess.call(command, shell=True)
 
 def plot_mcc_tree():

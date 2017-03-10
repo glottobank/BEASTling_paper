@@ -128,26 +128,27 @@ def compute_ranking_correls(ranked_means):
     ranked_means = [w.split(":")[-1].lower() for (r,w) in ranked_means]
     ranked_means = [w[:-4] if w.endswith(" (v)") else w for w in ranked_means]
 
+    correlations = []
     starostin = load_starostin_ranking()
     starostin = [s for s in starostin if s in ranked_means]
     posterior = [p for p in ranked_means if p in starostin]
     starostin = [starostin.index(w) for w in posterior]
     posterior = [posterior.index(w) for w in posterior]
-    starostin_correl = scipy.stats.spearmanr(posterior, starostin)[0]
+    correlations.append(scipy.stats.spearmanr(posterior, starostin)[0])
 
     swadesh = load_swadesh_ranking()
     swadesh = [s for s in swadesh if s in ranked_means]
     posterior = [p for p in ranked_means if p in swadesh]
     swadesh = [swadesh.index(w) for w in posterior]
     posterior = [posterior.index(w) for w in posterior]
-    swadesh_correl = scipy.stats.spearmanr(posterior, swadesh)[0]
+    correlations.append(scipy.stats.spearmanr(posterior, swadesh)[0])
 
     pagel = load_pagel_ranking()
     pagel = [s for s in pagel if s in ranked_means]
     posterior = [p for p in ranked_means if p in pagel]
     pagel = [pagel.index(w) for w in posterior]
     posterior = [posterior.index(w) for w in posterior]
-    pagel_correl = scipy.stats.spearmanr(posterior, pagel)[0]
+    correlations.append(scipy.stats.spearmanr(posterior, pagel)[0])
 
     starostin = load_starostin_ranking()
     swadesh = load_swadesh_ranking()
@@ -158,14 +159,12 @@ def compute_ranking_correls(ranked_means):
     swadesh = [swadesh.index(w) for w in posterior]
     posterior = [posterior.index(w) for w in posterior]
     mean = [(st+sw)/2.0 for st,sw in zip(starostin,swadesh)]
-    mean_correl = scipy.stats.spearmanr(posterior, mean)[0]
+    correlations.append(scipy.stats.spearmanr(posterior, mean)[0])
 
-    fp = open("ranking_correlations.csv", "w")
-    fp.write("%s, %f\n" % ("Starostin", starostin_correl))
-    fp.write("%s, %f\n" % ("Swadesh", swadesh_correl))
-    fp.write("%s, %f\n" % ("Mean", mean_correl))
-    fp.write("%s, %f\n" % ("Pagel", pagel_correl))
-    fp.close()
+    for l, c in zip(("starostin", "swadesh", "pagel", "mean"), correlations):
+        fp = open("%s_correlation.txt" % l, "w")
+        fp.write("%.2f" % c)
+        fp.close()
 
 def load_starostin_ranking():
     """

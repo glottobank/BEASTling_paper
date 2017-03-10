@@ -64,7 +64,7 @@ rate_variation = True
 type = relaxed
 [calibration]
 root = 4700 - 5700\end{verbatim}
-\caption{An example BEASTling configuration file, specifying an analysis of the Austronesian language family using structural data from the WALS, with internal structure partially constrained by Glottolog. Feature evolution is modelled by the Lewis Mk model with gamma distributed rate variation across features, and a LogNormal relaxed clock model of rate variation across branches in the tree.  A calibration date range is applied to the root of Austronesian.}
+\caption{\textbf{Fig \ref{fig:config}.  \textbf{An example BEASTling configuration file}.  The file specifies an analysis of the Austronesian language family using structural data from the WALS, with internal structure partially constrained by Glottolog. Feature evolution is modelled by the Lewis Mk model with gamma distributed rate variation across features, and a LogNormal relaxed clock model of rate variation across branches in the tree.  A calibration date range is applied to the root of Austronesian.}
 \label{fig:config}
 \end{figure}
 
@@ -144,23 +144,23 @@ To illustrate the sorts of analyses BEASTling is designed to facilitate, we pres
 
 Our first example is an inference of a phylogenetic tree for the Indo-European language family, using cognate data and the binary Covarion model.  The dataset\cite{List2014a} (prepared by List\cite{List2014} uses material from the ``Tower of Babel'' project\cite{Starostin2008}) and is comparatively small, containing 19 languages and 110 features, each of which corresponds to a word meaning.  The datapoints are cognate class assignments, coded as integers.  That is, two languages have the same integer for a given meaning if their words for that meaning are cognate.  Known borrowings are indicated by negative values, i.e. a datapoint of -4 indicates that a language has borrowed a meaning from cognate class 4.  Before running the analysis, we replace all known borrowings with question marks, so that they are treated by BEAST as missing data.  Seven meanings in the dataset are automatically removed by BEASTling because they are constant for the 19 languages included, and thus cannot provide information about the tree topology (these meanings are \emph{claw, name, new, salt, two, what} and \emph{who}).  Because the binary Covarion model was specified, BEASTling automatically reformats the cognate data for the 103 remaining meanings into binary form, resulting in 645 binary features.  Because the languages in the datafile are identified by English names (``Dutch'', ``Swedish'', ``English'', etc.) and not ISO codes or Glottocodes, BEASTling cannot automatically impose monophyly constraints, so this feature is disabled.  No calibration dates are provided, and rate variation across features is enabled.
 
-The maximum clade credibility tree produced by this analysis is shown in Figure \ref{fig:ie}.  Note that despite the lack of monophyly constraints, the tree is in fairly good agreement with conventional wisdom on Indo-European history.  The Slavic, Germanic and Romance sub-families are all correctly positioned in their own clades with high posterior support, and the Slavic family branches before the other two.  The order in which Armenian, Greek and Hindi branch differs from previous analysis\cite{Gray2003,Bouckaert2012}, but this can be readily attributed to the small number of languages in the dataset (note that the clade combining Armenian and Greek has the lowest posterior support of all clades).
+The maximum clade credibility tree produced by this analysis is shown in Figure \ref{fig:ie}.  Note that despite the lack of monophyly constraints, the tree is in good agreement with conventional wisdom on Indo-European history.  The Slavic, Germanic and Romance sub-families are all correctly positioned in their own clades.  The Slavic clade is correctly divided into East, South and West Slavic, and the Germanic clade is correctly divided into North and West Germanic.  The order in which Armenian, Greek and Hindi branch differs from previous analysis\cite{Gray2003,Bouckaert2012}, which may be at least partially due to the small number of languages in the dataset (Hindi is the only representative of the Indo-Iranian subfamily).  Further, the close relationship between Romanian and French is unexpected, which may be due to the influence of occasional erroneous cognate judgements in the dataset\cite{Geisler2010} as well as efforts at ``purification'' of Romanian\cite{ShijulalNelson-Sathi2010}.  It is important to understand that the tree shown in Figure \ref{fig:ie} is one of a posterior sample of 10,000 trees, in particular the tree which best represents the clades which are most strongly supported in the sample.  Different parts of the tree topology may be more or less uncertain, and this is indicated graphically in the figure by the solidity of the branches.  While the Slavic, Germanic and Romance sub-families have...
 
 \begin{figure}[t]
 	\begin{center}
 	\includegraphics[width=0.90\textwidth]{examples/indoeuropean/mcct.eps}
 	\end{center}
-	\caption{Maximum clade credibility tree for the Indo-European languages in our first example analysis.  The coloured blocks correspond to the correctly reconstructed subfamilies Slavic, Germanic and Romance.  Tree branches are solid if they subtend clades with posterior support exceeding 0.66, dashed if support is between 0.33 and 0.66 and dotted if support is below 0.33.}
+	\caption{\textbf{Fig \ref{fig:ie}}.  \textbf{Maximum clade credibility tree for the Indo-European languages in our example analysis of Indo-European cognate data}.  The coloured blocks correspond to the correctly reconstructed subfamilies Slavic, Germanic and Romance.  This tree is a summary of a posterior sample, and some aspects are more or less certain than others.  Tree branches are solid if they subtend clades with posterior support exceeding 0.66 (common inside established subfamilies), dashed if support is between 0.33 and 0.66 and dotted if support is below 0.33 (which occurs only for the relationship between Armenian and Greek).}
 \label{fig:ie}
 \end{figure}
 
-In addition to a posterior sample of trees, the analysis logs posterior distributions over the relative substitution rate parameters for the 103 meaning slots.  A considerable amount of rate variation is inferred, with the fastest meaning undergoing change 22 times faster than the slowest meaning.  Table \ref{tab:ie} shows the meanings with the ten highest and ten lowest rates, while Figure \ref{fig:ie_rates} shows how the distribution over rates varies across different parts of speech (see Supplementary Material for part of speech assignments).  Verbs and nouns both have median rates well below the average of 1.0, with long tails toward higher rates.  In contrast, adjectives have a median rate very close to average, with nearly symmetric tails toward lower and higher rates.  Words for body parts evolve somewhat more slowly than other nouns, while pronouns have a tight rate distribution with only a single outlier with an above average rate.  Similarly, colour terms are markedly more stable than other adjectives, with no colour terms having faster than average rates.
+In addition to a posterior sample of trees, the analysis logs posterior distributions over the relative substitution rate parameters for the 103 meaning slots.  A considerable amount of rate variation is inferred, with the fastest meaning undergoing change 22 times faster than the slowest meaning.  Table \ref{tab:ie} shows the meanings with the ten highest and ten lowest rates, while Figure \ref{fig:ie_rates} shows how the distribution over rates varies across different parts of speech (see Supplementary Material for part of speech assignments).  Verbs and nouns both have median rates well below the average of 1.0, with long tails toward higher rates.  In contrast, adjectives have a median rate very close to average, with nearly symmetric tails toward lower and higher rates.  Words for body parts evolve somewhat more slowly than other nouns, and pronouns have a tight rate distribution with only a single outlier with an above average rate, consistent with previous accounts of Indo-European pronouns showing little evidence of borrowing or grammaticaliation\cite{Musken2008}.  Similarly, colour terms are markedly more stable than other adjectives, with no colour terms having faster than average rates.
 
 \begin{table}[t]
 	\begin{center}
 		\input{examples/indoeuropean/table.tex}
 	\end{center}
-	\caption{Relative substitution rates of the ten slowest and fastest changing meaning slots in our example analysis of Indo-European cognate data.  Rates are relative to the average across all features, e.g. \emph{sun} evolves roughly 10 times more slowly than average, while \emph{belly} evolves at more than twice the average rate.  Note that many of the slowest meanings are body parts.}
+	\caption{\textbf{Table \ref{tab:ie}}.  \textbf{Relative substitution rates of the ten slowest and fastest changing meaning slots in our example analysis of Indo-European cognate data}.  Rates are relative to the average across all features, e.g. \emph{sun} evolves roughly 10 times more slowly than average, while \emph{belly} evolves at more than twice the average rate.  Note that many of the slowest meanings are body parts.}
 \label{tab:ie}
 \end{table}
 
@@ -168,7 +168,7 @@ In addition to a posterior sample of trees, the analysis logs posterior distribu
 	\begin{center}
 	\includegraphics[width=0.90\textwidth]{examples/indoeuropean/category_rates.eps}
 	\end{center}
-\caption{Distributions of relative substitution rates for different categories of meaning slot.  Most categories have a median rate well below the average of 1.0, with long tails extending to faster than average rates.  All colour terms have below average rates, as do all pronouns except for the outlier \emph{that}.}
+	\caption{\textbf{Fig \ref{fig:ie_rates}}.  \textbf{Distributions of relative substitution rates for different categories of meaning slot}.  Most categories have a median rate well below the average of 1.0, with long tails extending to faster than average rates.  All colour terms have below average rates, as do all pronouns except for the outlier \emph{that}.}
 \label{fig:ie_rates}
 \end{figure}
 
@@ -186,7 +186,7 @@ The inferred rates of change of these typological features show a slightly wider
 	\begin{center}
 		\input{examples/austronesian/table.tex}
 	\end{center}
-	\caption{Relative substitution rates of the ten slowest and fastest changing features in our example analysis of Austronesian typological data.  Rates are relative to the average across all features.  Note that many of the slowest features relate to word order.}
+	\caption{\textbf{Table \ref{tab:austro}}. \textbf{Relative substitution rates of the ten slowest and fastest changing features in our example analysis of Austronesian typological data}.  Rates are relative to the average across all features, i.e. rates above 1.0 indicate faster than average evolution while rates below 1.0 indicate slower than average evolution.  Note that many of the slowest features relate to word order.}
 \label{tab:austro}
 \end{table*}
 
@@ -194,7 +194,7 @@ The inferred rates of change of these typological features show a slightly wider
 	\begin{center}
 	\includegraphics[width=0.45\textwidth]{examples/austronesian/rate_variation.eps}
 	\end{center}
-\caption{Histogram and kernel density estimate of relative substitution rates across the WALS features in our example analysis of Austronesian typological data.}
+	\caption{\textbf{Fig \ref{fig:austro}}. \textbf{Histogram and kernel density estimate of relative substitution rates across the WALS features in our example analysis of Austronesian typological data}.}
 \label{fig:austro}
 \end{figure}
 

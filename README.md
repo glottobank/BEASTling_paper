@@ -1,16 +1,17 @@
 # BEASTling: a software tool for linguistic phylogenetics using BEAST 2
 
-This is the repository for the paper "BEASTling: a software tool for
-linguistic phylogenetics using BEAST 2", published in XXX.  It contains
-not only the pre-print text of the paper, but also everything required for you
-to do your own independent "build" of the paper.  All original data for the
-example analyses is included in its original, untouched form.  All processing of
-the data which is required before the analyses is performed by Python scripts,
-so you can see exactly what was done and even see how the results change if you
-do it differently.  Post-processing of the results from BEAST is performed from
-scripts too, including programmatically creating every table and every figure in
-the paper.  A Makefile and a Python virtual environment have been provided to
-make builds as smooth as possible, although there may still be some bumps.
+This is the repository for the paper "[BEASTling: a software tool for
+linguistic phylogenetics using BEAST 2](https://doi.org/10.1371/journal.pone.0180908)",
+published in PLOS ONE on August 10, 2017.  It contains not only the pre-print
+text of the paper, but also everything required for you to do your own
+independent "build" of the paper.  All original data for the example analyses is
+included in its original, untouched form.  All processing of the data which is
+required before the analyses is performed by Python scripts, so you can see
+exactly what was done and even see how the results change if you do it
+differently.  Post-processing of the results from BEAST is performed from scripts
+too, including programmatically creating every table and every figure in the
+paper.  A Makefile and a Python virtual environment have been provided to make
+builds as smooth as possible, although there may still be some bumps.
 Nevertheless, with a little effort you should be able to produce your own PDF of
 the paper, with slight differences in the tables and figures corresponding to
 the probabilistic variation between MCMC runs.
